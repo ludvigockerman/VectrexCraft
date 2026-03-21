@@ -1,47 +1,90 @@
 #include <vectrex.h>
 #include "LUT.h"
+#include "controller.h"
 
-typedef struct { int x,y,z; } Vec3;
-typedef struct { int x,y; } Vec2;
+#define bool int
+#define true 1
+#define false 0
 
-int sensitivity = 10;
+typedef struct {
+    int x;
+    int y;
+} vec2;
 
-//Vec3 blockPositions[30]; // 30 is the maximum amount of cubes that can be rendered at the same time.
+typedef struct {
+    int x;
+    int y;
+    int z;
+} vec3;
 
-int edges[12][2] = {
-    {0,1},{1,2},{2,3},{3,0},
-    {4,5},{5,6},{6,7},{7,4},
-    {0,4},{1,5},{2,6},{3,7}
+const int edges[12][2] = {
+    {0, 1},
+    {1, 2},
+    {2, 3},
+    {3, 0},
+    {4, 5},
+    {5, 6},
+    {6, 7},
+    {7, 4},
+    {0, 4},
+    {1, 5},
+    {2, 6},
+    {3, 7}
 };
 
-Vec3 playerPosition;
-Vec2 playerRotation;
+bool tf[8][3] = {
+    {false, false, false},
+    {true,  false, false},
+    {true,  true,  false},
+    {false, true,  false},
+    {false, false, true },
+    {true,  false, true },
+    {true,  true,  true },
+    {false, true,  true }  
+};
 
-void project_point(Vec3 p, Vec2 *out)
-{
-    long angle = (long)((playerRotation.x + 128) & 0xFF);
+vec3 playerposition;
+vec2 playerrotation;
+long decimalx = 0;
+long decimalz = 0;
+int speed = 2;
+int sensitivity = 10;
+
+// ---------------------------------------------------------
+// Help functions
+// ---------------------------------------------------------
+
+int SearchThroughArray(vec2* list, int length, vec2 line) {
+    for(int i = 0; i < length; i++) {
+        if (list[i].x == line.x && list[i].y == line.y) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void project_point(vec3 p, vec2* out) {
+    long angle = (long)((playerrotation.x + 128) & 0xff);
+    int sinv = sin_table[angle];
+    int cosv = sin_table[(angle + 64) & 0xff];
     
-    int sinv = sin_table[angle]; // value from -127 to 127
-    int cosv = sin_table[(angle + 64) & 0xFF]; // value from -127 to 127
-
-    long dz = (long)(p.z - playerPosition.z);
-    long dy = (long)(p.y - playerPosition.y);
-    long dx = (long)(p.x - playerPosition.x);
-
+    long dz = (long)(p.z - playerposition.z);
+    long dy = (long)(p.y - playerposition.y);
+    long dx = (long)(p.x - playerposition.x);
+    
     long rz = (long)(dx * sinv + dz * cosv) / 127;
     long rx = (long)(dx * cosv - dz * sinv) / 127;
     
-    if(rz <= 0) 
-    {
+    if(rz <= 0) {
         out->x = (int)-128;
         out->y = (int)-128;
         return;
     }
-
+    
     long fx = (rx * 50) / rz;
     long fy = (dy * 50) / rz;
     
-    if (fx > 127 || fx < -127 || fy > 127 || fy < -127){
+    if (fx > 127 || fx < -127 || fy > 127 || fy < -127) {
         out->x = -128;
         out->y = -128;
         return;
@@ -51,101 +94,130 @@ void project_point(Vec3 p, Vec2 *out)
     out->y = (int)fy;
 }
 
-void MoveToScreenPosition(Vec2 p)
-{
-    //Wait_Recal();
-    Reset0Ref();
-    Moveto_d(p.y, p.x);
-}
+// ---------------------------------------------------------
+// Drawing functions
+// ---------------------------------------------------------
 
-void DrawCube(Vec3 *cube)
-{
-    Vec2 pts[8];
-    for(int w=0;w<8;w++)
-    {
-        project_point(cube[w], &pts[w]);
+void drawcube(vec3* cube) {
+    vec2 pts[8];
+    for(int i = 0; i < 8; i++) {
+        if (cube[i].x == -128) {
+            pts[i] = (vec2){ -128, -128 };
+        } else {
+            project_point(cube[i], &pts[i]);
+        }
     }
-    
-    int currentPosx;
-    int currentPosy;
-    int newPosx;
-    int newPosy;
-    int drawnLines = 0;
-    
-    for(int i=0;i<12;i++)
-    {
-        if (pts[edges[i][0]].x == -128 || pts[edges[i][1]].x == -128){
+
+    int currentposx;
+    int currentposy;
+    int newposx;
+    int newposy;
+    int drawnlines = 0;
+
+    Reset0Ref();
+
+    for(int i = 0; i < 12; i++) {
+        vec2 p1 = pts[edges[i][0]];
+        vec2 p2 = pts[edges[i][1]];
+        
+        if (p1.x == -128 || p2.x == -128) {
             continue;
         }
-        if (drawnLines==0 || drawnLines==6){
-            currentPosx = pts[edges[i][0]].x;
-            currentPosy = pts[edges[i][0]].y;
-            MoveToScreenPosition((Vec2){currentPosx, currentPosy});
-        }
-        newPosx = pts[edges[i][0]].x;
-        newPosy = pts[edges[i][0]].y;
-        Moveto_d(newPosy - currentPosy, newPosx - currentPosx);
-        currentPosx = newPosx;
-        currentPosy = newPosy;
         
-        int deltax = pts[edges[i][1]].x - pts[edges[i][0]].x;
-        int deltay = pts[edges[i][1]].y - pts[edges[i][0]].y;
+        if (drawnlines == 0 || drawnlines == 6) {
+            currentposx = p1.x;
+            currentposy = p1.y;
+            Reset0Ref();
+            Moveto_d(currentposy, currentposx);
+        } else {
+            newposx = p1.x;
+            newposy = p1.y;
+            Moveto_d(newposy - currentposy, newposx - currentposx);
+            currentposx = newposx;
+            currentposy = newposy;
+        }
+        
+        int deltax = p2.x - p1.x;
+        int deltay = p2.y - p1.y;
         Draw_Line_d(deltay, deltax);
-        drawnLines++;
+        drawnlines++;
         
-        currentPosx += deltax;
-        currentPosy += deltay;
+        currentposx += deltax;
+        currentposy += deltay;
     }
 }
 
-void CreateCubeAt(Vec3 cubePos, Vec3 *out)
-{
-    out[0] = (Vec3){cubePos.x-10,cubePos.y-10,cubePos.z-10};
-    out[1] = (Vec3){cubePos.x,   cubePos.y-10,cubePos.z-10};
-    out[2] = (Vec3){cubePos.x,   cubePos.y,   cubePos.z-10};
-    out[3] = (Vec3){cubePos.x-10,cubePos.y,   cubePos.z-10};
-    
-    out[4] = (Vec3){cubePos.x-10,cubePos.y-10,cubePos.z};
-    out[5] = (Vec3){cubePos.x,   cubePos.y-10,cubePos.z};
-    out[6] = (Vec3){cubePos.x,   cubePos.y,   cubePos.z};
-    out[7] = (Vec3){cubePos.x-10,cubePos.y,   cubePos.z};
+void createcubeat(vec3 cubepos) {
+    vec3 out[8];
+    out[0] = (vec3){ cubepos.x - 10, cubepos.y - 10, cubepos.z - 10 };
+    out[1] = (vec3){ cubepos.x,      cubepos.y - 10, cubepos.z - 10 };
+    out[2] = (vec3){ cubepos.x,      cubepos.y,      cubepos.z - 10 };
+    out[3] = (vec3){ cubepos.x - 10, cubepos.y,      cubepos.z - 10 };
+    out[4] = (vec3){ cubepos.x - 10, cubepos.y - 10, cubepos.z };
+    out[5] = (vec3){ cubepos.x,      cubepos.y - 10, cubepos.z };
+    out[6] = (vec3){ cubepos.x,      cubepos.y,      cubepos.z };
+    out[7] = (vec3){ cubepos.x - 10, cubepos.y,      cubepos.z };
+
+    for (int i = 0; i < 8; i++) {
+        bool x = true;
+        bool y = true;
+        bool z = true;
+        
+        if (playerposition.x >= out[i].x) x = false;
+        if (playerposition.y >= out[i].y) y = false;
+        if (playerposition.z >= out[i].z) z = false;
+        
+        if (x == tf[i][0] && y == tf[i][1] && z == tf[i][2]) {
+            out[i] = (vec3){ -128, -128, -128 };
+        }
+    }
+    drawcube(&out[0]);
 }
 
-int main(void)
-{
-    Vec3 cube[8]; // 8 points per cube
-    
-    playerPosition = (Vec3){ 0, 0, 0 };
-    playerRotation = (Vec2){ 0, 0 };
+// ---------------------------------------------------------
+// Main
+// ---------------------------------------------------------
 
-    while(1)
-    {        
+int main(void) {
+    playerposition = (vec3){ 0, 0, 0 };
+    playerrotation = (vec2){ 0, 0 };
+
+    while(1) {
         Wait_Recal();
-        CreateCubeAt((Vec3){-10, 0, 30}, &cube[0]);
-        DrawCube(&cube[0]);
-        CreateCubeAt((Vec3){-10, -10, 30}, &cube[0]);
-        DrawCube(&cube[0]);
-        CreateCubeAt((Vec3){-10, 10, 30}, &cube[0]);
-        DrawCube(&cube[0]);
-        CreateCubeAt((Vec3){-10, 10, 40}, &cube[0]);
-        DrawCube(&cube[0]);
-        CreateCubeAt((Vec3){-10, 10, 20}, &cube[0]);
-        DrawCube(&cube[0]);
-        Intensity_a(0x5F);
-        //Joy_Digital();
+        Intensity_a(0x5f);
+
+        createcubeat((vec3){-10, 0, 30});
+        createcubeat((vec3){-10, -10, 30});
+        createcubeat((vec3){-10, 10, 30});
+        createcubeat((vec3){-10, 10, 40});
+        createcubeat((vec3){-10, 10, 20});
+
         Read_Btns();
-        if (Vec_Btn_State & 0b00000001){
-            //Print_Str_d( 50, -50, "BUTTON1");
-            playerPosition.z ++;
+        check_joysticks();
+
+        if (joystick_1_x() > 0) playerrotation.x += sensitivity;
+        if (joystick_1_x() < 0) playerrotation.x -= sensitivity;
+        if (joystick_1_y() > 0) playerrotation.y += sensitivity;
+        if (joystick_1_y() < 0) playerrotation.y -= sensitivity;
+
+        if (Vec_Btn_State & 0b00000001) {
+            long move_angle = (playerrotation.x + 128) & 0xff;
+            long s = (long)sin_table[move_angle];
+            long c = (long)sin_table[(move_angle + 64) & 0xff];
+            
+            decimalx += (speed * s);
+            decimalz += (speed * c);
+            
+            while (decimalx > 127)  { decimalx -= 127; playerposition.x += 1; }
+            while (decimalz > 127)  { decimalz -= 127; playerposition.z += 1; }
+            while (decimalx < -127) { decimalx += 127; playerposition.x -= 1; }
+            while (decimalz < -127) { decimalz += 127; playerposition.z -= 1; }
         }
-        if (Vec_Btn_State & 0b00000010){
-            playerPosition.z --;
-        }
-        if (Vec_Btn_State & 0b00000100){
-            playerRotation.x += sensitivity;
-        }
-        if (Vec_Btn_State & 0b00001000){
-            playerRotation.x -= sensitivity;
-        }
+
+        if (Vec_Btn_State & 0b00000010) { /* Button 2 */ }
+        if (Vec_Btn_State & 0b00000100) { /* Button 3 */ }
+        if (Vec_Btn_State & 0b00001000) { /* Button 4 */ }
     }
+    
+    return 0;
 }
