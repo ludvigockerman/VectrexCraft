@@ -64,25 +64,34 @@ int SearchThroughArray(vec2* list, int length, vec2 line) {
 }
 
 void project_point(vec3 p, vec2* out) {
-    long angle = (long)((playerrotation.x + 128) & 0xff);
-    int sinv = sin_table[angle];
-    int cosv = sin_table[(angle + 64) & 0xff];
+    // Rotation in x is called v and rotation in y is called u
+    long anglev = (long)((playerrotation.x + 128) & 0xff);
+    long angleu = (long)((playerrotation.y + 128) & 0xff);
+    
+    int sinv = sin_table[anglev];
+    int cosv = sin_table[(anglev + 64) & 0xff];
+    
+    int sinu = sin_table[angleu];
+    int cosu = sin_table[(angleu + 64) & 0xff];
     
     long dz = (long)(p.z - playerposition.z);
     long dy = (long)(p.y - playerposition.y);
     long dx = (long)(p.x - playerposition.x);
     
-    long rz = (long)(dx * sinv + dz * cosv) / 127;
-    long rx = (long)(dx * cosv - dz * sinv) / 127;
+    long r1z = (long)(dx * sinv + dz * cosv) / 127; // We divide by 127 because sinv and cosv both have a value from -127 to +127
+    long r1x = (long)(dx * cosv - dz * sinv) / 127;
+
+    long r2y = (long)(dy * cosu - r1z * sinu) / 127;
+    long r2z = (long)(dy * sinu + r1z * cosu) / 127;
     
-    if(rz <= 0) {
+    if(r2z <= 0) {
         out->x = (int)-128;
         out->y = (int)-128;
         return;
     }
     
-    long fx = (rx * 50) / rz;
-    long fy = (dy * 50) / rz;
+    long fx = (r1x * 50) / r2z;
+    long fy = (r2y * 50) / r2z;
     
     if (fx > 127 || fx < -127 || fy > 127 || fy < -127) {
         out->x = -128;
@@ -180,7 +189,7 @@ void createcubeat(vec3 cubepos) {
 
 int main(void) {
     playerposition = (vec3){ 0, 0, 0 };
-    playerrotation = (vec2){ 0, 0 };
+    playerrotation = (vec2){ 0, -128 };
 
     while(1) {
         Wait_Recal();
