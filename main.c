@@ -38,6 +38,47 @@ signed int sinv, cosv, sinu, cosu;
 // Help functions
 // ---------------------------------------------------------
 
+void int_to_string(int n, char *str)
+{
+    int i = 0;
+    int neg = 0;
+
+    if (n < 0)
+    {
+        neg = 1;
+        n = -n;
+    }
+
+    if (n == 0)
+    {
+        str[0] = '0';
+        str[1] = 0;
+        return;
+    }
+
+    while (n > 0)
+    {
+        str[i++] = (char)((n % 10) + '0');
+        n /= 10;
+    }
+
+    if (neg)
+        str[i++] = '-';
+
+    str[i] = 0;
+
+    int a = 0;
+    int b = i - 1;
+
+    while (a < b)
+    {
+        char t = str[a];
+        str[a] = str[b];
+        str[b] = t;
+        a++;
+        b--;
+    }
+}
 
 bool SearchThroughArray(vec2* list, char length, vec2 line) {
     for(char i = 0; i < length; i++) {
@@ -99,7 +140,7 @@ void build_rotation_string(char *buf, int x, int y)
     buf[pos++] = ' ';
     buf[pos++] = 'X';
     buf[pos++] = ':';
-    int_to_string(x, cstr);
+    int_to_string(x, (char*)cstr);
 
     i = 0;
     while (cstr[i] != 0){
@@ -119,48 +160,6 @@ void build_rotation_string(char *buf, int x, int y)
     }
 
     buf[pos] = 0;
-}
-
-void int_to_string(int n, char *str)
-{
-    int i = 0;
-    int neg = 0;
-
-    if (n < 0)
-    {
-        neg = 1;
-        n = -n;
-    }
-
-    if (n == 0)
-    {
-        str[0] = '0';
-        str[1] = 0;
-        return;
-    }
-
-    while (n > 0)
-    {
-        str[i++] = (n % 10) + '0';
-        n /= 10;
-    }
-
-    if (neg)
-        str[i++] = '-';
-
-    str[i] = 0;
-
-    int a = 0;
-    int b = i - 1;
-
-    while (a < b)
-    {
-        char t = str[a];
-        str[a] = str[b];
-        str[b] = t;
-        a++;
-        b--;
-    }
 }
 
 void GetSin(int* out, unsigned char angle)
@@ -220,9 +219,9 @@ void project_point(vec3 p, vec2* out) {
     long r2y = (long)((long)(dy << 8) * cosu - r1z * sinu);
     long r2z = (long)((long)(dy << 8) * sinu + r1z * cosu);
 
-    int r1xShift = r1x >> 8;
-    int r2yShift = r2y >> 16;
-    int r2zShift = r2z >> 16;
+    int r1xShift = (int)(r1x >> 8);
+    int r2yShift = (int)(r2y >> 16);
+    int r2zShift = (int)(r2z >> 16);
     
     if(r2zShift <= 0) {
         out->x = (signed char)-128;
@@ -477,7 +476,7 @@ int main(void) {
     playerrotation.y = 0;
     UpdateDirections();
 
-    terminal_print("TERMINAL INITIALIZED 0123456789");
+    terminal_print((char*)"TERMINAL INITIALIZED 0123456789");
 
     while(1) {
         wait_retrace();
