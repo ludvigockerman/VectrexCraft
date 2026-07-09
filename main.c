@@ -8,23 +8,40 @@
 
 #define SHOW_POSTITION 1
 #define SHOW_ROTATION 1
+#define MAX_VERTICES 64
+#define MAX_QUADS 32
 
 typedef struct {
-    char x;
-    char y;
+    int x;
+    int y;
 } vec2;
 
 typedef struct {
     char x;
     char y;
-    char z;
+} c_vec2;
+
+typedef struct {
+    int x;
+    int y;
+    int z;
 } vec3;
+
+typedef struct {
+    unsigned char v0;
+    unsigned char v1;
+    unsigned char v2;
+    unsigned char v3;
+} quad;
 
 char world[3][3][3] = { // x, y, z
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} }
 };
+
+//quad quads[MAX_QUADS];
+//vec2 projected[MAX_VERTICES];
 
 vec3 playerposition;
 vec2 playerrotation;
@@ -37,6 +54,16 @@ signed int sinv, cosv, sinu, cosu;
 // ---------------------------------------------------------
 // Help functions
 // ---------------------------------------------------------
+
+int division(char a, int bfour){
+    if (bfour < 16) return 0;
+
+    int out = (a * (int)(recip_table[bfour] >> 10));
+    if ((a < 0 && bfour > 0) || (a > 0 && bfour < 0)) {
+        out = -out;
+    }
+    return out;
+}
 
 void int_to_string(int n, char *str)
 {
@@ -207,11 +234,11 @@ void project_point(vec3 p, vec2* out) {
     long dy = (long)(p.y - playerposition.y);
     long dx = (long)(p.x - playerposition.x);
     
-    if (dx >= 127 || dy >= 127 || dz >= 127 || dx <= -127 || dy <= -127 || dz <= -127){
-        out->x = -128;
-        out->y = -128;
-        return;
-    }
+    //if (dx >= 127 || dy >= 127 || dz >= 127 || dx <= -127 || dy <= -127 || dz <= -127){
+    //    out->x = -128;
+    //    out->y = -128;
+    //    return;
+    //}
     
     long r1z = (long)(dx * sinv + dz * cosv); // Bit shifting >> 8 (same as dividing by 256)
     long r1x = (long)(dx * cosv - dz * sinv);
@@ -229,11 +256,11 @@ void project_point(vec3 p, vec2* out) {
         return;
     }
 
-    if (r1xShift >= 127 || r2yShift >= 127 || r2zShift >= 127 || r1xShift <= -127 || r2yShift <= -127 || r2zShift <= -127){
-        out->x = -128;
-        out->y = -128;
-        return;
-    }
+    //if (r1xShift >= 127 || r2yShift >= 127 || r2zShift >= 127 || r1xShift <= -127 || r2yShift <= -127 || r2zShift <= -127){
+    //    out->x = -128;
+    //    out->y = -128;
+    //    return;
+    //}
 
     long fx = ((long)r1x  * (long)recip_table[(int)(r2z >> 12)]) >> 19;
     long fy = ((long)(r2y >> 8) * (long)recip_table[(int)(r2z >> 12)]) >> 19;
@@ -511,6 +538,8 @@ int main(void) {
 
         vec3 p1 = {10, -10, 30};
         createcubeat(p1, 1, -1, 0);
+        vec3 p2 = {10, -10, 50};
+        createcubeat(p2, 1, -1, 2);
 
         uint8_t buttons = read_buttons();
         uint8_t joy = read_joystick(1);
