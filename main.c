@@ -10,6 +10,7 @@
 #define SHOW_ROTATION 1
 #define MAX_VERTICES 64
 #define MAX_QUADS 32
+#define BLOCK_SIZE 8
 
 typedef struct {
     int x;
@@ -54,6 +55,86 @@ signed int sinv, cosv, sinu, cosu;
 // ---------------------------------------------------------
 // Help functions
 // ---------------------------------------------------------
+
+int mul8(char a, char b);
+
+long mul16x8(unsigned int a, unsigned char b)
+{
+    unsigned char low = (unsigned char)a;
+    unsigned char high = (unsigned char)(a >> 8);
+
+    unsigned int low_result = mul8(low, b);
+    unsigned int high_result = mul8(high, b);
+
+    long result;
+
+    result = (long)low_result;
+    result += (long)high_result << 8;
+
+    return result;
+}
+
+long mul16x16(unsigned int a, unsigned int b){
+    unsigned char low = (unsigned char)a;
+    unsigned char high = (unsigned char)(a >> 8);
+
+    unsigned long low_result = mul16x8((unsigned int)b, (unsigned char)low);
+    unsigned long high_result = mul16x8((unsigned int)b, (unsigned char)high);
+
+    long result = (long)low_result + ((long)high_result << 8);
+
+    return result;
+}
+
+long mul8_u(long a, long b) {
+    return (long)mul8((unsigned char)a, (unsigned char)b);
+}
+
+long mul16x8_u(long a, long b){
+    return (long)mul16x8((unsigned int)a, (unsigned char)b);
+}
+
+long mul16x16_u(long a, long b){
+    return (long)mul16x16((unsigned int)a, (unsigned int)b);
+}
+
+unsigned long mul_signed_neg(long a, long b, long (*func)(long, long), char *neg){
+    if (a < 0) {
+        a = -a;
+        neg ^= 1;
+    }
+
+    if (b < 0) {
+        b = -b;
+        neg ^= 1;
+    }
+
+    long result = func(a, b);
+
+    return result;
+}
+
+long mul_signed(long a, long b, long (*func)(long, long)){
+    char neg = 0;
+
+    if (a < 0) {
+        a = -a;
+        neg ^= 1;
+    }
+
+    if (b < 0) {
+        b = -b;
+        neg ^= 1;
+    }
+
+    long result = func(a, b);
+
+    if (neg) {
+        result = -result;
+    }
+
+    return result;
+}
 
 int division(char a, int bfour){
     if (bfour < 16) return 0;
@@ -229,25 +310,38 @@ void MovePlayer(signed char dist, unsigned char move_angle){
 
 void project_point(vec3 p, vec2* out) {
     //terminal_print((char*)"PROJECTING POINT");
-
-    long dz = (long)(p.z - playerposition.z);
-    long dy = (long)(p.y - playerposition.y);
-    long dx = (long)(p.x - playerposition.x);
     
-    //if (dx >= 127 || dy >= 127 || dz >= 127 || dx <= -127 || dy <= -127 || dz <= -127){
-    //    out->x = -128;
-    //    out->y = -128;
-    //    return;
-    //}
+    int dz = (int)(p.z - playerposition.z);
+    int dy = (int)(p.y - playerposition.y);
+    int dx = (int)(p.x - playerposition.x);
     
-    long r1z = (long)(dx * sinv + dz * cosv); // Bit shifting >> 8 (same as dividing by 256)
-    long r1x = (long)(dx * cosv - dz * sinv);
+    if (dx >= 90 || dy >= 90 || dz >= 90 || dx <= -90 || dy <= -90 || dz <= -90){
+        out->x = -128;
+        out->y = -128;
+        return;
+    }
 
-    long r2y = (long)((long)(dy << 8) * cosu - r1z * sinu);
-    long r2z = (long)((long)(dy << 8) * sinu + r1z * cosu);
+    char c_dz = (char)dz;
+    char c_dy = (char)dy;
+    char c_dx = (char)dx;
+    
+    //long r1z = (long)(dx * sinv + dz * cosv); // Bit shifting >> 8 (same as dividing by 256)
+    //long r1x = (long)(dx * cosv - dz * sinv);
 
-    int r1xShift = (int)(r1x >> 8);
-    int r2yShift = (int)(r2y >> 16);
+    long r1z = ((long)mul_signed(c_dx, sinv, mul8_u)) +
+            ((long)mul_signed(c_dz, cosv, mul8_u)); //17 bit signed
+
+    long r1x = ((long)mul_signed(c_dx, cosv, mul8_u)) -
+            ((long)mul_signed(c_dz, sinv, mul8_u)); //17 bit signed
+
+    //long r2y = (long)((long)(dy << 8) * cosu - r1z * sinu);
+    //long r2z = (long)((long)(dy << 8) * sinu + r1z * cosu);
+
+    long r2y = (long)((mul_signed(dy, cosu, mul8_u) << 8) - mul_signed(r1z, sinu, mul16x8_u)); //25 bit signed
+    long r2z = (long)((mul_signed(dy, sinu, mul8_u) << 8) + mul_signed(r1z, cosu, mul16x8_u)); //25 bit signed
+
+    //int r1xShift = (int)(r1x >> 8);
+    //int r2yShift = (int)(r2y >> 16);
     int r2zShift = (int)(r2z >> 16);
     
     if(r2zShift <= 0) {
@@ -262,8 +356,8 @@ void project_point(vec3 p, vec2* out) {
     //    return;
     //}
 
-    long fx = ((long)r1x  * (long)recip_table[(int)(r2z >> 12)]) >> 19;
-    long fy = ((long)(r2y >> 8) * (long)recip_table[(int)(r2z >> 12)]) >> 19;
+    long fx = ((long)r1x  * (long)recip_table[(int)(r2z >> 12)]) >> 18;
+    long fy = ((long)(r2y >> 8) * (long)recip_table[(int)(r2z >> 12)]) >> 18;
     
     if (fx > 127 || fx < -127 || fy > 127 || fy < -127) {
         out->x = -128;
@@ -279,7 +373,7 @@ void project_point(vec3 p, vec2* out) {
 // Drawing functions
 // ---------------------------------------------------------
 
-void drawcube(vec3* cube, unsigned char edges[12][2]) {
+void drawcube(vec3* cube, signed char edges[12][2]) {
     //terminal_print((char*)"DRAWING CUBE");
 
     vec2 pts[8];
@@ -335,41 +429,44 @@ void drawcube(vec3* cube, unsigned char edges[12][2]) {
     }
 }
 
-void createcubeat(vec3 cubepos, signed char x, signed char y, signed char z) {
+void createcubeat(vec3 cubepos, signed char edges[12][2], vec3 *out) { //edges is an array of 12 pairs of indices, out is an array of 8 vec3s
     //terminal_print((char*)"CREATECUBEAT");
-    vec3 out[8];
-    out[0].x = cubepos.x - 10;
-    out[0].y = cubepos.y - 10;
-    out[0].z = cubepos.z - 10;
+    out[0].x = cubepos.x - BLOCK_SIZE;
+    out[0].y = cubepos.y - BLOCK_SIZE;
+    out[0].z = cubepos.z - BLOCK_SIZE;
 
     out[1].x = cubepos.x;
-    out[1].y = cubepos.y - 10;
-    out[1].z = cubepos.z - 10;
+    out[1].y = cubepos.y - BLOCK_SIZE;
+    out[1].z = cubepos.z - BLOCK_SIZE;
 
     out[2].x = cubepos.x;
     out[2].y = cubepos.y;
-    out[2].z = cubepos.z - 10;
+    out[2].z = cubepos.z - BLOCK_SIZE;
 
-    out[3].x = cubepos.x - 10;
+    out[3].x = cubepos.x - BLOCK_SIZE;
     out[3].y = cubepos.y;
-    out[3].z = cubepos.z - 10;
+    out[3].z = cubepos.z - BLOCK_SIZE;
 
-    out[4].x = cubepos.x - 10;
-    out[4].y = cubepos.y - 10;
+    out[4].x = cubepos.x - BLOCK_SIZE;
+    out[4].y = cubepos.y - BLOCK_SIZE;
     out[4].z = cubepos.z;
 
     out[5].x = cubepos.x;
-    out[5].y = cubepos.y - 10;
+    out[5].y = cubepos.y - BLOCK_SIZE;
     out[5].z = cubepos.z;
 
     out[6].x = cubepos.x;
     out[6].y = cubepos.y;
     out[6].z = cubepos.z;
 
-    out[7].x = cubepos.x - 10;
+    out[7].x = cubepos.x - BLOCK_SIZE;
     out[7].y = cubepos.y;
     out[7].z = cubepos.z;
 
+
+    char x = cubepos.x >> 3;
+    char y = cubepos.y >> 3;
+    char z = cubepos.z >> 3;
 
     // True means a block
     bool upBlock   = ( (y < 2) && world[x][y+1][z] );
@@ -383,13 +480,13 @@ void createcubeat(vec3 cubepos, signed char x, signed char y, signed char z) {
 
     // True means not visible
     bool upInvis   = (playerposition.y <= cubepos.y);
-    bool downInvis = (playerposition.y >= cubepos.y - 10);
+    bool downInvis = (playerposition.y >= cubepos.y - BLOCK_SIZE);
     
-    bool leftInvis  = (playerposition.x >= cubepos.x - 10);
+    bool leftInvis  = (playerposition.x >= cubepos.x - BLOCK_SIZE);
     bool rightInvis = (playerposition.x <= cubepos.x);
     
     bool frontInvis = (playerposition.z <= cubepos.z);
-    bool backInvis  = (playerposition.z >= cubepos.z - 10);
+    bool backInvis  = (playerposition.z >= cubepos.z - BLOCK_SIZE);
 
 
     bool up   = (upBlock || upInvis);
@@ -450,21 +547,18 @@ void createcubeat(vec3 cubepos, signed char x, signed char y, signed char z) {
         out[7].z = -128;
     }
 
-    unsigned char edges[12][2] = {
-        {0, 1},
-        {1, 2},
-        {2, 3},
-        {3, 0},
-        {4, 5},
-        {5, 6},
-        {6, 7},
-        {7, 4},
-        {0, 4},
-        {1, 5},
-        {2, 6},
-        {3, 7}
-    };
-    
+    edges[0][0] = 0; edges[0][1] = 1;
+    edges[1][0] = 1; edges[1][1] = 2;
+    edges[2][0] = 2; edges[2][1] = 3;
+    edges[3][0] = 3; edges[3][1] = 0;
+    edges[4][0] = 4; edges[4][1] = 5;
+    edges[5][0] = 5; edges[5][1] = 6;
+    edges[6][0] = 6; edges[6][1] = 7;
+    edges[7][0] = 7; edges[7][1] = 4;
+    edges[8][0] = 0; edges[8][1] = 4;
+    edges[9][0] = 1; edges[9][1] = 5;
+    edges[10][0] = 2; edges[10][1] = 6;
+    edges[11][0] = 3; edges[11][1] = 7;    
    
     if(backBlock){
         edges[0][0] = -1; edges[0][1] = -1;
@@ -486,9 +580,43 @@ void createcubeat(vec3 cubepos, signed char x, signed char y, signed char z) {
         edges[8][0] = -1; edges[8][1] = -1;
         edges[9][0] = -1; edges[9][1] = -1;
     }
-
-    drawcube(&out[0], edges);
 }
+
+void prepare_vertices() {
+    //terminal_print((char*)"PREPARING VERTICES");
+    c_vec2 pp[6];
+    //vec3 pos1, pos2, pos3, pos4, pos5, pos6;
+    //pos1 = {10, 0, 0};
+    //project_point(pos, &pp[0]);
+    //pos2 = (vec3){-10, 0, 0};
+    //project_point(pos, &pp[1]);
+//
+    //pos3 = (vec3){0, 10, 0};
+    //project_point(pos, &pp[2]);
+    //pos4 = (vec3){0, -10, 0};
+    //project_point(pos, &pp[3]);
+//
+    //pos5 = (vec3){0, 0, 10};
+    //project_point(pos, &pp[4]);
+    //pos6 = (vec3){0, 0, -10};
+    //project_point(pos, &pp[5]);
+}
+
+// ---------------------------------------------------------
+// misc
+// ---------------------------------------------------------
+
+void cast_ray_down_from_player(char dist, vec3* out) {
+
+    //signed char dx = (long)(cosv * dist) >> 8;
+    //signed char dz = (long)(sinv * dist) >> 8;
+//
+    //out->x = origin.x + dx;
+    //out->y = origin.y;
+    //out->z = origin.z + dz;
+}
+
+// idé jag sparar ett antal block framåt och ifall man tittar åt höger eller vänster sparas även den sidan. Sedan projiceras de i massor och sparas i ram. Varje möjlig punkt i en 8x8x8 lista (hälften av ram jag vet!)
 
 // ---------------------------------------------------------
 // Main
@@ -506,6 +634,9 @@ int main(void) {
     terminal_print((char*)"TERMINAL INITIALIZED 0123456789");
 
     while(1) {
+        //char message[64];
+        //int_to_string(mul8((char)25, (char)25), message);
+        //terminal_print(message);
         wait_retrace();
         intensity(0x5f);
 
@@ -536,10 +667,23 @@ int main(void) {
             }
         }*/
 
+        //prepare_vertices();
+
+        //c_vec2 blockpos;
+        //blockpos.x = (signed char)(playerposition.x >> 3);
+        //blockpos.y = (signed char)(playerposition.y >> 3);
+        //blockpos.z = (signed char)(playerposition.z >> 3);
+
+
+        char edges[12][2];
+        vec3 out[8];
+
         vec3 p1 = {10, -10, 30};
-        createcubeat(p1, 1, -1, 0);
+        createcubeat(p1, edges, out);
+        drawcube(out, edges);
         vec3 p2 = {10, -10, 50};
-        createcubeat(p2, 1, -1, 2);
+        createcubeat(p2, edges, out);
+        drawcube(out, edges);
 
         uint8_t buttons = read_buttons();
         uint8_t joy = read_joystick(1);
@@ -590,7 +734,7 @@ int main(void) {
             MovePlayer(-3, move_angle);
         }
 
-        //terminal_render();
+        terminal_render();
     }
     
     return 0;

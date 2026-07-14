@@ -1,1 +1,1 @@
-cmoc --vectrex --verbose main.c terminal.c
+cmoc --vectrex --intermediate --verbose main.c terminal.c mul.asm
