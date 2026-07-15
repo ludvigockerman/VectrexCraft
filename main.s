@@ -409,14 +409,14 @@ _mul16x16_u	EQU	*
 * END FUNCTION mul16x16_u(): defined at main.c:97
 funcend_mul16x16_u	EQU *
 funcsize_mul16x16_u	EQU	funcend_mul16x16_u-_mul16x16_u
-_mul_signed_neg	EXPORT
+_mul_unsigned_neg	EXPORT
 
 
 *******************************************************************************
 
-* FUNCTION mul_signed_neg(): defined at main.c:101
-_mul_signed_neg	EQU	*
-* Prototype: unsigned long mul_signed_neg(long, long, long (*)(long, long), char *)
+* FUNCTION mul_unsigned_neg(): defined at main.c:101
+_mul_unsigned_neg	EQU	*
+* Prototype: unsigned long mul_unsigned_neg(long, long, long (*)(long, long), char *)
 * Calling convention: 0 (CMOC Default)
 	PSHS	U
 	LEAU	,S
@@ -441,9 +441,9 @@ _mul_signed_neg	EQU	*
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BGE	L00114		 (optim: condBranchOverUncondBranch)
+	BGE	L00112		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00113 removed
+* Useless label L00111 removed
 * Line main.c:102
 * Line main.c:103: assignment: =
 	LEAX	6,U		variable `a', declared at main.c:101
@@ -456,15 +456,14 @@ _mul_signed_neg	EQU	*
 	LBSR	copyDWord	copy 4-byte struct (preserves X)
 * Line main.c:104: assignment: ^=
 	CLRA
-	LDB	#$01		decimal 1 signed
-* PSHS B,A optim: optimizeStackOperations1
-	LEAX	16,U
-	LDB	#1		optim: removeAndOrMulAddSub
-	EORA	,X
-	EORB	1,X
-	STD	,X
-L00114	EQU	*		else clause of if() started at main.c:102
-* Useless label L00115 removed
+* LDB #$01 optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	16,U		get address for indirection of variable neg
+	LDB	,X
+	EORB	#1		optim: optimizeStackOperations1
+	STB	,X
+L00112	EQU	*		else clause of if() started at main.c:102
+* Useless label L00113 removed
 * Line main.c:107: if
 * push right operand of comparison
 	CLRA
@@ -475,9 +474,9 @@ L00114	EQU	*		else clause of if() started at main.c:102
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BGE	L00117		 (optim: condBranchOverUncondBranch)
+	BGE	L00115		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00116 removed
+* Useless label L00114 removed
 * Line main.c:107
 * Line main.c:108: assignment: =
 	LEAX	10,U		variable `b', declared at main.c:101
@@ -490,15 +489,14 @@ L00114	EQU	*		else clause of if() started at main.c:102
 	LBSR	copyDWord	copy 4-byte struct (preserves X)
 * Line main.c:109: assignment: ^=
 	CLRA
-	LDB	#$01		decimal 1 signed
-* PSHS B,A optim: optimizeStackOperations1
-	LEAX	16,U
-	LDB	#1		optim: removeAndOrMulAddSub
-	EORA	,X
-	EORB	1,X
-	STD	,X
-L00117	EQU	*		else clause of if() started at main.c:107
-* Useless label L00118 removed
+* LDB #$01 optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	16,U		get address for indirection of variable neg
+	LDB	,X
+	EORB	#1		optim: optimizeStackOperations1
+	STB	,X
+L00115	EQU	*		else clause of if() started at main.c:107
+* Useless label L00116 removed
 * Line main.c:112: init of variable result
 * Line main.c:112: function call through pointer
 	LEAX	10,U		variable `b', declared at main.c:101
@@ -522,9 +520,9 @@ L00117	EQU	*		else clause of if() started at main.c:107
 * Useless label L00039 removed
 	LEAS	,U
 	PULS	U,PC
-* END FUNCTION mul_signed_neg(): defined at main.c:101
-funcend_mul_signed_neg	EQU *
-funcsize_mul_signed_neg	EQU	funcend_mul_signed_neg-_mul_signed_neg
+* END FUNCTION mul_unsigned_neg(): defined at main.c:101
+funcend_mul_unsigned_neg	EQU *
+funcsize_mul_unsigned_neg	EQU	funcend_mul_unsigned_neg-_mul_unsigned_neg
 _mul_signed	EXPORT
 
 
@@ -560,9 +558,9 @@ _mul_signed	EQU	*
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BGE	L00120		 (optim: condBranchOverUncondBranch)
+	BGE	L00118		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00119 removed
+* Useless label L00117 removed
 * Line main.c:120
 * Line main.c:121: assignment: =
 	LEAX	6,U		variable `a', declared at main.c:117
@@ -580,8 +578,8 @@ _mul_signed	EQU	*
 	LDB	-9,U
 	EORB	#1		optim: optimizeStackOperations1
 	STB	-9,U
-L00120	EQU	*		else clause of if() started at main.c:120
-* Useless label L00121 removed
+L00118	EQU	*		else clause of if() started at main.c:120
+* Useless label L00119 removed
 * Line main.c:125: if
 * push right operand of comparison
 	CLRA
@@ -592,9 +590,9 @@ L00120	EQU	*		else clause of if() started at main.c:120
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BGE	L00123		 (optim: condBranchOverUncondBranch)
+	BGE	L00121		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00122 removed
+* Useless label L00120 removed
 * Line main.c:125
 * Line main.c:126: assignment: =
 	LEAX	10,U		variable `b', declared at main.c:117
@@ -612,8 +610,8 @@ L00120	EQU	*		else clause of if() started at main.c:120
 	LDB	-9,U
 	EORB	#1		optim: optimizeStackOperations1
 	STB	-9,U
-L00123	EQU	*		else clause of if() started at main.c:125
-* Useless label L00124 removed
+L00121	EQU	*		else clause of if() started at main.c:125
+* Useless label L00122 removed
 * Line main.c:130: init of variable result
 * Line main.c:130: function call through pointer
 	LEAX	10,U		variable `b', declared at main.c:117
@@ -633,9 +631,9 @@ L00123	EQU	*		else clause of if() started at main.c:125
 * Line main.c:132: if
 	LDB	-9,U		variable `neg', declared at main.c:118
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00126		 (optim: condBranchOverUncondBranch)
+	BEQ	L00124		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00125 removed
+* Useless label L00123 removed
 * Line main.c:132
 * Line main.c:133: assignment: =
 	LEAX	-8,U		variable `result', declared at main.c:130
@@ -646,8 +644,8 @@ L00123	EQU	*		else clause of if() started at main.c:125
 	TFR	X,D		make D point to source struct
 	LEAX	-8,U		variable `result', declared at main.c:130
 	LBSR	copyDWord	copy 4-byte struct (preserves X)
-L00126	EQU	*		else clause of if() started at main.c:132
-* Useless label L00127 removed
+L00124	EQU	*		else clause of if() started at main.c:132
+* Useless label L00125 removed
 	LEAX	-8,U		variable `result', declared at main.c:130
 	LDD	4,U		address of return value
 	LBSR	copyDWordFromXToD
@@ -678,16 +676,16 @@ _division	EQU	*
 * Line main.c:140: if
 	LDD	6,U		variable bfour
 	CMPD	#$10
-	BGE	L00129		 (optim: condBranchOverUncondBranch)
+	BGE	L00127		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00128 removed
+* Useless label L00126 removed
 * Line main.c:140
 * Line main.c:140: return with value
 	CLRA
 	CLRB
 	BRA	L00041		return (main.c:140)
-L00129	EQU	*		else clause of if() started at main.c:140
-* Useless label L00130 removed
+L00127	EQU	*		else clause of if() started at main.c:140
+* Useless label L00128 removed
 * Line main.c:142: init of variable out
 	LDB	5,U		variable `a', declared at main.c:139
 	SEX			promotion of binary operand
@@ -709,32 +707,32 @@ L00129	EQU	*		else clause of if() started at main.c:140
 * Line main.c:143: if
 	LDB	5,U		variable a
 	CMPB	#$00
-	BGE	L00133		 (optim: condBranchOverUncondBranch)
+	BGE	L00131		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00134 removed
+* Useless label L00132 removed
 	LDD	6,U		variable bfour
 	ADDD	#0
-	BGT	L00131
+	BGT	L00129
 * optim: branchToNextLocation
-L00133	EQU	*
+L00131	EQU	*
 	LDB	5,U		variable a
 	CMPB	#$00
-	BLE	L00132		 (optim: condBranchOverUncondBranch)
+	BLE	L00130		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00135 removed
+* Useless label L00133 removed
 	LDD	6,U		variable bfour
 	ADDD	#0
-	BGE	L00132		 (optim: condBranchOverUncondBranch)
+	BGE	L00130		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-L00131	EQU	*		then clause of if() started at main.c:143
+L00129	EQU	*		then clause of if() started at main.c:143
 * Line main.c:143
 * Line main.c:144: assignment: =
 	CLRA			Negation of variable out
 	CLRB
 	SUBD	-2,U
 	STD	-2,U
-L00132	EQU	*		else clause of if() started at main.c:143
-* Useless label L00136 removed
+L00130	EQU	*		else clause of if() started at main.c:143
+* Useless label L00134 removed
 * Line main.c:146: return with value
 	LDD	-2,U		variable `out', declared at main.c:142
 * optim: branchToNextLocation
@@ -776,9 +774,9 @@ _int_to_string	EQU	*
 * Line main.c:154: if
 	LDD	4,U		variable n
 	ADDD	#0
-	BGE	L00138		 (optim: condBranchOverUncondBranch)
+	BGE	L00136		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00137 removed
+* Useless label L00135 removed
 * Line main.c:155
 * Line main.c:156: assignment: =
 	CLRA
@@ -789,14 +787,14 @@ _int_to_string	EQU	*
 	CLRB
 	SUBD	4,U
 	STD	4,U
-L00138	EQU	*		else clause of if() started at main.c:154
-* Useless label L00139 removed
+L00136	EQU	*		else clause of if() started at main.c:154
+* Useless label L00137 removed
 * Line main.c:160: if
 	LDD	4,U		variable `n', declared at main.c:149
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00144		 (optim: condBranchOverUncondBranch)
+	BNE	L00142		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00140 removed
+* Useless label L00138 removed
 * Line main.c:161
 * Line main.c:162: assignment: =
 * LDB #$30 optim: optimizeStackOperations1
@@ -812,11 +810,11 @@ L00138	EQU	*		else clause of if() started at main.c:154
 	LDB	#0		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
 	LBRA	L00042		return (main.c:164)
-* Useless label L00141 removed
-* Useless label L00142 removed
+* Useless label L00139 removed
+* Useless label L00140 removed
 * Line main.c:167: while
-	BRA	L00144		jump to while condition
-L00143	EQU	*		while body
+	BRA	L00142		jump to while condition
+L00141	EQU	*		while body
 * Line main.c:169: assignment: =
 	LDX	4,U		left
 	CLRA
@@ -843,18 +841,18 @@ L00143	EQU	*		while body
 	TFR	X,D		quotient to D
 	STD	[,S]		store quotient at address of left side of assignment
 	LEAS	2,S		dispose of address of left side of assignment
-L00144	EQU	*		while condition at main.c:167
+L00142	EQU	*		while condition at main.c:167
 	LDD	4,U		variable n
 	ADDD	#0
-	BGT	L00143
+	BGT	L00141
 * optim: branchToNextLocation
-* Useless label L00145 removed
+* Useless label L00143 removed
 * Line main.c:173: if
 	LDD	-6,U		variable `neg', declared at main.c:152
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00147		 (optim: condBranchOverUncondBranch)
+	BEQ	L00145		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00146 removed
+* Useless label L00144 removed
 * Line main.c:174
 * Line main.c:174: assignment: =
 * LDB #$2D optim: optimizeStackOperations1
@@ -867,8 +865,8 @@ L00144	EQU	*		while condition at main.c:167
 	LEAX	D,X		add offset
 	LDB	#45		optim: optimizeStackOperations1
 	STB	,X
-L00147	EQU	*		else clause of if() started at main.c:173
-* Useless label L00148 removed
+L00145	EQU	*		else clause of if() started at main.c:173
+* Useless label L00146 removed
 * Line main.c:176: assignment: =
 * CLRB  optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
@@ -886,8 +884,8 @@ L00147	EQU	*		else clause of if() started at main.c:173
 	ADDD	#$FFFF		65535
 	STD	-2,U		variable b
 * Line main.c:181: while
-	BRA	L00150		jump to while condition
-L00149	EQU	*		while body
+	BRA	L00148		jump to while condition
+L00147	EQU	*		while body
 * Line main.c:183: init of variable t
 	LDD	-4,U		variable a
 	LDX	6,U		pointer str
@@ -921,12 +919,12 @@ L00149	EQU	*		while body
 	LDX	-2,U		variable `b', declared at main.c:187
 	LEAX	-1,X
 	STX	-2,U
-L00150	EQU	*		while condition at main.c:181
+L00148	EQU	*		while condition at main.c:181
 	LDD	-4,U		variable a
 	CMPD	-2,U		variable b
-	BLT	L00149
+	BLT	L00147
 * optim: branchToNextLocation
-* Useless label L00151 removed
+* Useless label L00149 removed
 L00042	EQU	*		end of int_to_string()
 	LEAS	,U
 	PULS	U,PC
@@ -954,8 +952,8 @@ _SearchThroughArray	EQU	*
 * Line main.c:192: for init
 * Line main.c:192: init of variable i
 	CLR	-1,U		init of variable i
-	BRA	L00153		jump to for condition
-L00152	EQU	*
+	BRA	L00151		jump to for condition
+L00150	EQU	*
 * Line main.c:192: for body
 * Line main.c:193: if
 * optim: optimizeStackOperations4
@@ -970,9 +968,9 @@ L00152	EQU	*
 * optim: optimizeLoadDX
 	LDD	D,X		member x of AnonStruct_main.c:16 (optim: optimizeLoadDX)
 	CMPD	8,U		optim: optimizeStackOperations4
-	BNE	L00157		 (optim: condBranchOverUncondBranch)
+	BNE	L00155		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00158 removed
+* Useless label L00156 removed
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
 	LDB	-1,U		variable i
@@ -985,24 +983,24 @@ L00152	EQU	*
 	LEAX	D,X		add offset
 	LDD	2,X		member y of AnonStruct_main.c:16
 	CMPD	10,U		optim: optimizeStackOperations4
-	BNE	L00157		 (optim: condBranchOverUncondBranch)
+	BNE	L00155		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00156 removed
+* Useless label L00154 removed
 * Line main.c:193
 	LDB	#1
 	BRA	L00043		return (main.c:194)
-L00157	EQU	*		else clause of if() started at main.c:193
-* Useless label L00159 removed
-* Useless label L00154 removed
+L00155	EQU	*		else clause of if() started at main.c:193
+* Useless label L00157 removed
+* Useless label L00152 removed
 * Line main.c:192: for increment(s)
 	INC	-1,U
-L00153	EQU	*
+L00151	EQU	*
 * Line main.c:192: for condition
 	LDB	-1,U		variable i
 	CMPB	7,U		variable length
-	BLT	L00152
+	BLT	L00150
 * optim: branchToNextLocation
-* Useless label L00155 removed
+* Useless label L00153 removed
 	CLRB
 * optim: branchToNextLocation
 L00043	EQU	*		end of SearchThroughArray()
@@ -1070,8 +1068,8 @@ _build_position_string	EQU	*
 	CLRB
 	STD	-2,U
 * Line main.c:211: while
-	BRA	L00161		jump to while condition
-L00160	EQU	*		while body
+	BRA	L00159		jump to while condition
+L00158	EQU	*		while body
 * Line main.c:212: assignment: =
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
@@ -1090,15 +1088,15 @@ L00160	EQU	*		while body
 	LDX	-2,U		variable `i', declared at main.c:213
 	LEAX	1,X
 	STX	-2,U
-L00161	EQU	*		while condition at main.c:211
+L00159	EQU	*		while condition at main.c:211
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
 * optim: optimizeLoadDX
 	LDB	D,X		get r-value (optim: optimizeLoadDX)
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00160
+	BNE	L00158
 * optim: branchToNextLocation
-* Useless label L00162 removed
+* Useless label L00160 removed
 * Line main.c:216: assignment: =
 	LDB	#$20		decimal 32 signed
 	PSHS	B		right side of assignment
@@ -1144,8 +1142,8 @@ L00161	EQU	*		while condition at main.c:211
 	CLRB
 	STD	-2,U
 * Line main.c:222: while
-	BRA	L00164		jump to while condition
-L00163	EQU	*		while body
+	BRA	L00162		jump to while condition
+L00161	EQU	*		while body
 * Line main.c:223: assignment: =
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
@@ -1164,15 +1162,15 @@ L00163	EQU	*		while body
 	LDX	-2,U		variable `i', declared at main.c:224
 	LEAX	1,X
 	STX	-2,U
-L00164	EQU	*		while condition at main.c:222
+L00162	EQU	*		while condition at main.c:222
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
 * optim: optimizeLoadDX
 	LDB	D,X		get r-value (optim: optimizeLoadDX)
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00163
+	BNE	L00161
 * optim: branchToNextLocation
-* Useless label L00165 removed
+* Useless label L00163 removed
 * Line main.c:227: assignment: =
 	LDB	#$20		decimal 32 signed
 	PSHS	B		right side of assignment
@@ -1218,8 +1216,8 @@ L00164	EQU	*		while condition at main.c:222
 	CLRB
 	STD	-2,U
 * Line main.c:233: while
-	BRA	L00167		jump to while condition
-L00166	EQU	*		while body
+	BRA	L00165		jump to while condition
+L00164	EQU	*		while body
 * Line main.c:234: assignment: =
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
@@ -1238,15 +1236,15 @@ L00166	EQU	*		while body
 	LDX	-2,U		variable `i', declared at main.c:235
 	LEAX	1,X
 	STX	-2,U
-L00167	EQU	*		while condition at main.c:233
+L00165	EQU	*		while condition at main.c:233
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
 * optim: optimizeLoadDX
 	LDB	D,X		get r-value (optim: optimizeLoadDX)
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00166
+	BNE	L00164
 * optim: branchToNextLocation
-* Useless label L00168 removed
+* Useless label L00166 removed
 * Line main.c:238: assignment: =
 	CLRB
 	PSHS	B		right side of assignment
@@ -1343,8 +1341,8 @@ _build_rotation_string	EQU	*
 	CLRB
 	STD	-2,U
 * Line main.c:254: while
-	BRA	L00170		jump to while condition
-L00169	EQU	*		while body
+	BRA	L00168		jump to while condition
+L00167	EQU	*		while body
 * Line main.c:255: assignment: =
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
@@ -1363,15 +1361,15 @@ L00169	EQU	*		while body
 	LDX	-2,U		variable `i', declared at main.c:256
 	LEAX	1,X
 	STX	-2,U
-L00170	EQU	*		while condition at main.c:254
+L00168	EQU	*		while condition at main.c:254
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
 * optim: optimizeLoadDX
 	LDB	D,X		get r-value (optim: optimizeLoadDX)
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00169
+	BNE	L00167
 * optim: branchToNextLocation
-* Useless label L00171 removed
+* Useless label L00169 removed
 * Line main.c:259: assignment: =
 	LDB	#$20		decimal 32 signed
 	PSHS	B		right side of assignment
@@ -1417,8 +1415,8 @@ L00170	EQU	*		while condition at main.c:254
 	CLRB
 	STD	-2,U
 * Line main.c:265: while
-	BRA	L00173		jump to while condition
-L00172	EQU	*		while body
+	BRA	L00171		jump to while condition
+L00170	EQU	*		while body
 * Line main.c:266: assignment: =
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
@@ -1437,15 +1435,15 @@ L00172	EQU	*		while body
 	LDX	-2,U		variable `i', declared at main.c:267
 	LEAX	1,X
 	STX	-2,U
-L00173	EQU	*		while condition at main.c:265
+L00171	EQU	*		while condition at main.c:265
 	LDD	-2,U		variable i
 	LEAX	-14,U		address of array cstr
 * optim: optimizeLoadDX
 	LDB	D,X		get r-value (optim: optimizeLoadDX)
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00172
+	BNE	L00170
 * optim: branchToNextLocation
-* Useless label L00174 removed
+* Useless label L00172 removed
 * Line main.c:270: assignment: =
 	CLRB
 	PSHS	B		right side of assignment
@@ -1477,9 +1475,9 @@ _GetSin	EQU	*
 * Line main.c:275: if
 	LDB	7,U		variable angle
 	CMPB	#$40
-	BHS	L00176		 (optim: condBranchOverUncondBranch)
+	BHS	L00174		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00175 removed
+* Useless label L00173 removed
 * Line main.c:275
 * Line main.c:276: assignment: =
 	LDB	7,U		variable angle
@@ -1491,15 +1489,15 @@ _GetSin	EQU	*
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[4,U]		optim: optimizeLdx
-	BRA	L00177		jump over else clause
-L00176	EQU	*		else clause of if() started at main.c:275
+	BRA	L00175		jump over else clause
+L00174	EQU	*		else clause of if() started at main.c:275
 * Line main.c:286
 * Line main.c:278: if
 	LDB	7,U		variable angle
 	CMPB	#$80
-	BHS	L00179		 (optim: condBranchOverUncondBranch)
+	BHS	L00177		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00178 removed
+* Useless label L00176 removed
 * Line main.c:278
 * Line main.c:279: assignment: =
 * optim: optimize8BitStackOps
@@ -1514,15 +1512,15 @@ L00176	EQU	*		else clause of if() started at main.c:275
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[4,U]		optim: optimizeLdx
-	BRA	L00180		jump over else clause
-L00179	EQU	*		else clause of if() started at main.c:278
+	BRA	L00178		jump over else clause
+L00177	EQU	*		else clause of if() started at main.c:278
 * Line main.c:286
 * Line main.c:281: if
 	LDB	7,U		variable angle
 	CMPB	#$C0
-	BHS	L00182		 (optim: condBranchOverUncondBranch)
+	BHS	L00180		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00181 removed
+* Useless label L00179 removed
 * Line main.c:281
 * Line main.c:282: assignment: =
 	LDB	7,U		variable angle
@@ -1539,8 +1537,8 @@ L00179	EQU	*		else clause of if() started at main.c:278
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[4,U]		optim: optimizeLdx
-	BRA	L00183		jump over else clause
-L00182	EQU	*		else clause of if() started at main.c:281
+	BRA	L00181		jump over else clause
+L00180	EQU	*		else clause of if() started at main.c:281
 * Line main.c:284
 * Line main.c:285: assignment: =
 	LDB	#$FF		variable `angle', declared at main.c:273 (optim: negbToSubb)
@@ -1559,9 +1557,9 @@ L00182	EQU	*		else clause of if() started at main.c:281
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[4,U]		optim: optimizeLdx
-L00183	EQU	*		end of if() started at main.c:281
-L00180	EQU	*		end of if() started at main.c:278
-L00177	EQU	*		end of if() started at main.c:275
+L00181	EQU	*		end of if() started at main.c:281
+L00178	EQU	*		end of if() started at main.c:278
+L00175	EQU	*		end of if() started at main.c:275
 * Useless label L00046 removed
 	LEAS	,U
 	PULS	U,PC
@@ -1693,8 +1691,8 @@ _MovePlayer	EQU	*
 	LBSR	addDWordDWord	preserves X
 	LEAS	4,S
 * Line main.c:305: while
-	BRA	L00185		jump to while condition
-L00184	EQU	*		while body
+	BRA	L00183		jump to while condition
+L00182	EQU	*		while body
 * Line main.c:305: assignment: -=
 * Push right operand of sub.
 	CLRA
@@ -1713,7 +1711,7 @@ L00184	EQU	*		while body
 	LDD	,X
 	ADDD	#1		optim: optimizeStackOperations1
 	STD	,X
-L00185	EQU	*		while condition at main.c:305
+L00183	EQU	*		while condition at main.c:305
 * push right operand of comparison
 	CLRA
 	LDB	#$FF		decimal 255 signed
@@ -1723,12 +1721,12 @@ L00185	EQU	*		while condition at main.c:305
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BGT	L00184
+	BGT	L00182
 * optim: branchToNextLocation
-* Useless label L00186 removed
+* Useless label L00184 removed
 * Line main.c:306: while
-	BRA	L00188		jump to while condition
-L00187	EQU	*		while body
+	BRA	L00186		jump to while condition
+L00185	EQU	*		while body
 * Line main.c:306: assignment: -=
 * Push right operand of sub.
 	CLRA
@@ -1747,7 +1745,7 @@ L00187	EQU	*		while body
 	LDD	,X
 	ADDD	#1		optim: optimizeStackOperations1
 	STD	,X
-L00188	EQU	*		while condition at main.c:306
+L00186	EQU	*		while condition at main.c:306
 * push right operand of comparison
 	CLRA
 	LDB	#$FF		decimal 255 signed
@@ -1757,12 +1755,12 @@ L00188	EQU	*		while condition at main.c:306
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BGT	L00187
+	BGT	L00185
 * optim: branchToNextLocation
-* Useless label L00189 removed
+* Useless label L00187 removed
 * Line main.c:307: while
-	BRA	L00191		jump to while condition
-L00190	EQU	*		while body
+	BRA	L00189		jump to while condition
+L00188	EQU	*		while body
 * Line main.c:307: assignment: +=
 * Push right operand of add.
 	CLRA
@@ -1781,7 +1779,7 @@ L00190	EQU	*		while body
 	LDD	,X
 	SUBD	#1		optim: optimizeStackOperations1
 	STD	,X
-L00191	EQU	*		while condition at main.c:307
+L00189	EQU	*		while condition at main.c:307
 * push right operand of comparison
 	LDD	#$FF01		constant expression: 65281 decimal, signed
 	PSHS	B,A
@@ -1790,12 +1788,12 @@ L00191	EQU	*		while condition at main.c:307
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BLT	L00190
+	BLT	L00188
 * optim: branchToNextLocation
-* Useless label L00192 removed
+* Useless label L00190 removed
 * Line main.c:308: while
-	BRA	L00194		jump to while condition
-L00193	EQU	*		while body
+	BRA	L00192		jump to while condition
+L00191	EQU	*		while body
 * Line main.c:308: assignment: +=
 * Push right operand of add.
 	CLRA
@@ -1814,7 +1812,7 @@ L00193	EQU	*		while body
 	LDD	,X
 	SUBD	#1		optim: optimizeStackOperations1
 	STD	,X
-L00194	EQU	*		while condition at main.c:308
+L00192	EQU	*		while condition at main.c:308
 * push right operand of comparison
 	LDD	#$FF01		constant expression: 65281 decimal, signed
 	PSHS	B,A
@@ -1823,9 +1821,9 @@ L00194	EQU	*		while condition at main.c:308
 	PSHS	X
 	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
 	LEAS	4,S
-	BLT	L00193
+	BLT	L00191
 * optim: branchToNextLocation
-* Useless label L00195 removed
+* Useless label L00193 removed
 * Useless label L00048 removed
 	LEAS	,U
 	PULS	U,PC
@@ -1843,105 +1841,107 @@ _project_point	EQU	*
 * Calling convention: 0 (CMOC Default)
 	PSHS	U
 	LEAU	,S
-	LEAS	-163,S
+	LEAS	-161,S
 * Formal parameter(s):
 *      4,U:    6 bytes: p: struct AnonStruct_main.c:26: line 311
 *     10,U:    2 bytes: out: struct AnonStruct_main.c:16 *: line 311
 * Local non-static variable(s):
-*   -163,U:    2 bytes: dz: int: line 314
-*   -161,U:    2 bytes: dy: int: line 315
-*   -159,U:    2 bytes: dx: int: line 316
-*   -157,U:    1 byte : c_dz: char: line 324
-*   -156,U:    1 byte : c_dy: char: line 325
-*   -155,U:    1 byte : c_dx: char: line 326
-*   -154,U:    4 bytes: r1z: long: line 331
-*   -150,U:    4 bytes: r1x: long: line 334
-*   -146,U:    4 bytes: r2y: long: line 340
-*   -142,U:    4 bytes: r2z: long: line 341
-*   -138,U:    2 bytes: r2zShift: int: line 345
-*   -136,U:    4 bytes: fx: long: line 359
-*   -132,U:    4 bytes: fy: long: line 360
-*   -128,U:    4 bytes: $V00081: long: line 332
-*   -124,U:    4 bytes: $V00082: long: line 331
-*   -120,U:    4 bytes: $V00083: long: line 331
-*   -116,U:    4 bytes: $V00084: long: line 332
-*   -112,U:    4 bytes: $V00085: long: line 332
-*   -108,U:    4 bytes: $V00086: long: line 335
-*   -104,U:    4 bytes: $V00087: long: line 334
-*   -100,U:    4 bytes: $V00088: long: line 334
-*    -96,U:    4 bytes: $V00089: long: line 335
-*    -92,U:    4 bytes: $V00090: long: line 335
-*    -88,U:    4 bytes: $V00091: long: line 340
-*    -84,U:    4 bytes: $V00092: long: line 340
-*    -80,U:    4 bytes: $V00093: long: line 340
-*    -76,U:    4 bytes: $V00094: long: line 340
-*    -72,U:    4 bytes: $V00095: long: line 340
-*    -68,U:    4 bytes: $V00096: long: line 341
-*    -64,U:    4 bytes: $V00097: long: line 341
-*    -60,U:    4 bytes: $V00098: long: line 341
-*    -56,U:    4 bytes: $V00099: long: line 341
-*    -52,U:    4 bytes: $V00100: long: line 341
-*    -48,U:    4 bytes: $V00101: long: line 345
-*    -44,U:    4 bytes: $V00102: long: line 359
-*    -40,U:    4 bytes: $V00103: long: line 359
-*    -36,U:    4 bytes: $V00104: long: line 359
-*    -32,U:    4 bytes: $V00105: long: line 359
-*    -28,U:    4 bytes: $V00106: long: line 359
-*    -24,U:    4 bytes: $V00107: long: line 360
-*    -20,U:    4 bytes: $V00108: long: line 360
-*    -16,U:    4 bytes: $V00109: long: line 360
-*    -12,U:    4 bytes: $V00110: long: line 360
-*     -8,U:    4 bytes: $V00111: long: line 360
-*     -4,U:    4 bytes: $V00112: long: line 360
+*   -161,U:    2 bytes: dz: int: line 314
+*   -159,U:    2 bytes: dy: int: line 315
+*   -157,U:    2 bytes: dx: int: line 316
+*   -155,U:    1 byte : c_dz: char: line 324
+*   -154,U:    1 byte : c_dy: char: line 325
+*   -153,U:    1 byte : c_dx: char: line 326
+*   -152,U:    4 bytes: r1z: long: line 331
+*   -148,U:    4 bytes: r1x: long: line 334
+*   -144,U:    4 bytes: r2y: long: line 340
+*   -140,U:    4 bytes: r2z: long: line 341
+*   -136,U:    2 bytes: r2zShift: int: line 345
+*   -134,U:    1 byte : neg_fx: char: line 359
+*   -133,U:    4 bytes: fx_o: unsigned long: line 360
+*   -129,U:    2 bytes: fx: int: line 361
+*   -127,U:    1 byte : neg_fy: char: line 363
+*   -126,U:    4 bytes: fy_o: unsigned long: line 364
+*   -122,U:    2 bytes: fy: int: line 365
+*   -120,U:    4 bytes: $V00081: long: line 332
+*   -116,U:    4 bytes: $V00082: long: line 331
+*   -112,U:    4 bytes: $V00083: long: line 331
+*   -108,U:    4 bytes: $V00084: long: line 332
+*   -104,U:    4 bytes: $V00085: long: line 332
+*   -100,U:    4 bytes: $V00086: long: line 335
+*    -96,U:    4 bytes: $V00087: long: line 334
+*    -92,U:    4 bytes: $V00088: long: line 334
+*    -88,U:    4 bytes: $V00089: long: line 335
+*    -84,U:    4 bytes: $V00090: long: line 335
+*    -80,U:    4 bytes: $V00091: long: line 340
+*    -76,U:    4 bytes: $V00092: long: line 340
+*    -72,U:    4 bytes: $V00093: long: line 340
+*    -68,U:    4 bytes: $V00094: long: line 340
+*    -64,U:    4 bytes: $V00095: long: line 340
+*    -60,U:    4 bytes: $V00096: long: line 341
+*    -56,U:    4 bytes: $V00097: long: line 341
+*    -52,U:    4 bytes: $V00098: long: line 341
+*    -48,U:    4 bytes: $V00099: long: line 341
+*    -44,U:    4 bytes: $V00100: long: line 341
+*    -40,U:    4 bytes: $V00101: long: line 345
+*    -36,U:    4 bytes: $V00102: unsigned long: line 360
+*    -32,U:    4 bytes: $V00103: long: line 360
+*    -28,U:    4 bytes: $V00104: long: line 360
+*    -24,U:    4 bytes: $V00105: unsigned long: line 361
+*    -20,U:    4 bytes: $V00106: unsigned long: line 364
+*    -16,U:    4 bytes: $V00107: long: line 364
+*    -12,U:    4 bytes: $V00108: long: line 364
+*     -8,U:    4 bytes: $V00109: long: line 364
+*     -4,U:    4 bytes: $V00110: unsigned long: line 365
 * Line main.c:314: init of variable dz
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable p
 	SUBD	_playerposition+4,PCR	optim: optimizeStackOperations4
-	STD	-163,U		variable dz
+	STD	-161,U		variable dz
 * Line main.c:315: init of variable dy
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable p
 	SUBD	_playerposition+2,PCR	optim: optimizeStackOperations4
-	STD	-161,U		variable dy
+	STD	-159,U		variable dy
 * Line main.c:316: init of variable dx
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable p
 	SUBD	_playerposition+0,PCR	optim: optimizeStackOperations4
-	STD	-159,U		variable dx
+	STD	-157,U		variable dx
 * Line main.c:318: if
 * optim: storeLoad
 	CMPD	#$5A
-	BGE	L00196
-* optim: branchToNextLocation
-* Useless label L00202 removed
-	LDD	-161,U		variable dy
-	CMPD	#$5A
-	BGE	L00196
-* optim: branchToNextLocation
-* Useless label L00201 removed
-	LDD	-163,U		variable dz
-	CMPD	#$5A
-	BGE	L00196
+	BGE	L00194
 * optim: branchToNextLocation
 * Useless label L00200 removed
-	LDD	-159,U		variable dx
-	CMPD	#$FFA6
-	BLE	L00196
+	LDD	-159,U		variable dy
+	CMPD	#$5A
+	BGE	L00194
 * optim: branchToNextLocation
 * Useless label L00199 removed
-	LDD	-161,U		variable dy
-	CMPD	#$FFA6
-	BLE	L00196
+	LDD	-161,U		variable dz
+	CMPD	#$5A
+	BGE	L00194
 * optim: branchToNextLocation
 * Useless label L00198 removed
-	LDD	-163,U		variable dz
+	LDD	-157,U		variable dx
 	CMPD	#$FFA6
-	BGT	L00197		 (optim: condBranchOverUncondBranch)
+	BLE	L00194
+* optim: branchToNextLocation
+* Useless label L00197 removed
+	LDD	-159,U		variable dy
+	CMPD	#$FFA6
+	BLE	L00194
+* optim: branchToNextLocation
+* Useless label L00196 removed
+	LDD	-161,U		variable dz
+	CMPD	#$FFA6
+	BGT	L00195		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-L00196	EQU	*		then clause of if() started at main.c:318
+L00194	EQU	*		then clause of if() started at main.c:318
 * Line main.c:318
 * Line main.c:319: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
@@ -1957,20 +1957,20 @@ L00196	EQU	*		then clause of if() started at main.c:318
 * optim: stripUselessPushPull
 	STD	2,X		optim: optimizeLeax
 	LBRA	L00049		return (main.c:321)
-L00197	EQU	*		else clause of if() started at main.c:318
-* Useless label L00203 removed
+L00195	EQU	*		else clause of if() started at main.c:318
+* Useless label L00201 removed
 * Line main.c:324: init of variable c_dz
-	LDD	-163,U		variable `dz', declared at main.c:314
+	LDD	-161,U		variable `dz', declared at main.c:314
 * Cast from `int' to byte: result already in B
-	STB	-157,U		variable c_dz
+	STB	-155,U		variable c_dz
 * Line main.c:325: init of variable c_dy
-	LDD	-161,U		variable `dy', declared at main.c:315
+	LDD	-159,U		variable `dy', declared at main.c:315
 * Cast from `int' to byte: result already in B
-	STB	-156,U		variable c_dy
+	STB	-154,U		variable c_dy
 * Line main.c:326: init of variable c_dx
-	LDD	-159,U		variable `dx', declared at main.c:316
+	LDD	-157,U		variable `dx', declared at main.c:316
 * Cast from `int' to byte: result already in B
-	STB	-155,U		variable c_dx
+	STB	-153,U		variable c_dx
 * Line main.c:331: init of variable r1z
 * Push right operand of add.
 * Line main.c:332: function call: mul_signed()
@@ -1980,16 +1980,16 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LDB	-157,U		variable `c_dz', declared at main.c:324
+	LDB	-155,U		variable `c_dz', declared at main.c:324
 	SEX			promoting byte argument to word
 	LEAS	-4,S		slot for argument 1
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-112,U		address of struct/union to be returned by mul_signed()
+	LEAX	-104,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-112,U		address of struct/union returned by mul_signed()
+	LEAX	-104,U		address of struct/union returned by mul_signed()
 * optim: mergePushXPushD
 * Push left operand of add.
 * Line main.c:331: function call: mul_signed()
@@ -1999,22 +1999,22 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LDB	-155,U		variable `c_dx', declared at main.c:326
+	LDB	-153,U		variable `c_dx', declared at main.c:326
 	SEX			promoting byte argument to word
 	LEAS	-4,S		slot for argument 1
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-120,U		address of struct/union to be returned by mul_signed()
+	LEAX	-112,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-120,U		address of struct/union returned by mul_signed()
+	LEAX	-112,U		address of struct/union returned by mul_signed()
 	PSHS	X
-	LEAX	-128,U		temporary destination, type long
+	LEAX	-120,U		temporary destination, type long
 	LBSR	addDWordDWord	preserves X
 	LEAS	4,S
 	TFR	X,D		address of source number
-	LEAX	-154,U		variable r1z
+	LEAX	-152,U		variable r1z
 	LBSR	copyDWord
 * Line main.c:334: init of variable r1x
 * Push right operand of sub.
@@ -2025,16 +2025,16 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LDB	-157,U		variable `c_dz', declared at main.c:324
+	LDB	-155,U		variable `c_dz', declared at main.c:324
 	SEX			promoting byte argument to word
 	LEAS	-4,S		slot for argument 1
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-92,U		address of struct/union to be returned by mul_signed()
+	LEAX	-84,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-92,U		address of struct/union returned by mul_signed()
+	LEAX	-84,U		address of struct/union returned by mul_signed()
 * optim: mergePushXPushD
 * Push left operand of sub.
 * Line main.c:334: function call: mul_signed()
@@ -2044,22 +2044,22 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LDB	-155,U		variable `c_dx', declared at main.c:326
+	LDB	-153,U		variable `c_dx', declared at main.c:326
 	SEX			promoting byte argument to word
 	LEAS	-4,S		slot for argument 1
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-100,U		address of struct/union to be returned by mul_signed()
+	LEAX	-92,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-100,U		address of struct/union returned by mul_signed()
+	LEAX	-92,U		address of struct/union returned by mul_signed()
 	PSHS	X
-	LEAX	-108,U		temporary destination, type long
+	LEAX	-100,U		temporary destination, type long
 	LBSR	subDWordDWord	preserves X
 	LEAS	4,S
 	TFR	X,D		address of source number
-	LEAX	-150,U		variable r1x
+	LEAX	-148,U		variable r1x
 	LBSR	copyDWord
 * Line main.c:340: init of variable r2y
 * Push right operand of sub.
@@ -2070,14 +2070,14 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-154,U		variable `r1z', declared at main.c:331
+	LEAX	-152,U		variable `r1z', declared at main.c:331
 	LEAS	-4,S		pass long by value
 	LBSR	push4ByteStruct	C function argument 1 of mul_signed(): long
-	LEAX	-72,U		address of struct/union to be returned by mul_signed()
+	LEAX	-64,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-72,U		address of struct/union returned by mul_signed()
+	LEAX	-64,U		address of struct/union returned by mul_signed()
 	PSHS	X
 * Push left operand of sub.
 	CLRA
@@ -2090,25 +2090,25 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LDD	-161,U		variable `dy', declared at main.c:315
+	LDD	-159,U		variable `dy', declared at main.c:315
 	LEAS	-4,S		slot for argument 1
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-76,U		address of struct/union to be returned by mul_signed()
+	LEAX	-68,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-76,U		address of struct/union returned by mul_signed()
+	LEAX	-68,U		address of struct/union returned by mul_signed()
 	PSHS	X		address of input dword to be shifted
-	LEAX	-80,U		temporary destination, type long
+	LEAX	-72,U		temporary destination, type long
 	LBSR	leftShiftDWord	preserves X
 	LEAS	3,S
 	PSHS	X
-	LEAX	-84,U		temporary destination, type long
+	LEAX	-76,U		temporary destination, type long
 	LBSR	subDWordDWord	preserves X
 	LEAS	4,S
 	TFR	X,D		address of source number
-	LEAX	-146,U		variable r2y
+	LEAX	-144,U		variable r2y
 	LBSR	copyDWord
 * Line main.c:341: init of variable r2z
 * Push right operand of add.
@@ -2119,14 +2119,14 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-154,U		variable `r1z', declared at main.c:331
+	LEAX	-152,U		variable `r1z', declared at main.c:331
 	LEAS	-4,S		pass long by value
 	LBSR	push4ByteStruct	C function argument 1 of mul_signed(): long
-	LEAX	-52,U		address of struct/union to be returned by mul_signed()
+	LEAX	-44,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-52,U		address of struct/union returned by mul_signed()
+	LEAX	-44,U		address of struct/union returned by mul_signed()
 	PSHS	X
 * Push left operand of add.
 	CLRA
@@ -2139,37 +2139,37 @@ L00197	EQU	*		else clause of if() started at main.c:318
 	LEAS	-4,S		slot for argument 2
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LDD	-161,U		variable `dy', declared at main.c:315
+	LDD	-159,U		variable `dy', declared at main.c:315
 	LEAS	-4,S		slot for argument 1
 	LEAX	,S
 	LBSR	initDWordFromSignedWord
-	LEAX	-56,U		address of struct/union to be returned by mul_signed()
+	LEAX	-48,U		address of struct/union to be returned by mul_signed()
 	PSHS	X		hidden argument
 	JSR	_mul_signed
 	LEAS	12,S
-	LEAX	-56,U		address of struct/union returned by mul_signed()
+	LEAX	-48,U		address of struct/union returned by mul_signed()
 	PSHS	X		address of input dword to be shifted
-	LEAX	-60,U		temporary destination, type long
+	LEAX	-52,U		temporary destination, type long
 	LBSR	leftShiftDWord	preserves X
 	LEAS	3,S
 	PSHS	X
-	LEAX	-64,U		temporary destination, type long
+	LEAX	-56,U		temporary destination, type long
 	LBSR	addDWordDWord	preserves X
 	LEAS	4,S
 	TFR	X,D		address of source number
-	LEAX	-142,U		variable r2z
+	LEAX	-140,U		variable r2z
 	LBSR	copyDWord
 * Line main.c:345: init of variable r2zShift
 * Shifting a long right by 16 bits into a word. Emitting expression to be shifted.
-* optim: optimizeIndexedX2: LEAX -142,U
-	LDD	-142,U		shift long right by 16 bits by keeping high word; optim: optimizeIndexedX2
-	STD	-138,U		variable r2zShift
+* optim: optimizeIndexedX2: LEAX -140,U
+	LDD	-140,U		shift long right by 16 bits by keeping high word; optim: optimizeIndexedX2
+	STD	-136,U		variable r2zShift
 * Line main.c:347: if
 * optim: storeLoad
 	ADDD	#0
-	BGT	L00205		 (optim: condBranchOverUncondBranch)
+	BGT	L00203		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00204 removed
+* Useless label L00202 removed
 * Line main.c:347
 * Line main.c:348: assignment: =
 	LDB	#$80		optim: lddToLDB
@@ -2189,19 +2189,21 @@ L00197	EQU	*		else clause of if() started at main.c:318
 * optim: stripUselessPushPull
 	STD	2,X		optim: optimizeLeax
 	LBRA	L00049		return (main.c:350)
-L00205	EQU	*		else clause of if() started at main.c:347
-* Useless label L00206 removed
-* Line main.c:359: init of variable fx
-	CLRA
-	LDB	#$12		decimal 18 signed
-	LDA	#$FF		request sign extension
-	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
-* Push right operand of mul.
+L00203	EQU	*		else clause of if() started at main.c:347
+* Useless label L00204 removed
+* Line main.c:359: init of variable neg_fx
+	CLR	-134,U		init of variable neg_fx
+* Line main.c:360: init of variable fx_o
+* Line main.c:360: function call: mul_unsigned_neg()
+	LEAX	-134,U		variable `neg_fx', declared at main.c:359
+* optim: mergePushXPushD
+	LDD	#_mul16x16_u	address of mul16x16_u(), defined at main.c:97
+	PSHS	X,B,A		optim: mergePushXPushD
 	CLRA
 	LDB	#$0C		decimal 12 signed
 	LDA	#$FF		request sign extension
 	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
-	LEAX	-142,U		variable `r2z', declared at main.c:341
+	LEAX	-140,U		variable `r2z', declared at main.c:341
 	PSHS	X		address of input dword to be shifted
 	LEAX	-28,U		temporary destination, type long
 	LBSR	rightShiftDWord	preserves X
@@ -2218,33 +2220,49 @@ L00205	EQU	*		else clause of if() started at main.c:347
 	LDD	D,X		get r-value (optim: optimizeLoadDX)
 	LEAX	-32,U		destination of cast
 	LBSR	initDWordFromUnsignedWord
-	PSHS	X
-* Push left operand of mul.
-	LEAX	-150,U		variable `r1x', declared at main.c:334
-	PSHS	X
-	LEAX	-40,U		temporary destination, type long
-	LBSR	mulDWordDWord	preserves X
-	LEAS	4,S
+	LEAS	-4,S		pass long by value
+	LBSR	push4ByteStruct	C function argument 2 of mul_unsigned_neg(): long
+	LEAX	-148,U		variable `r1x', declared at main.c:334
+	LEAS	-4,S		pass long by value
+	LBSR	push4ByteStruct	C function argument 1 of mul_unsigned_neg(): long
+	LEAX	-36,U		address of struct/union to be returned by mul_unsigned_neg()
+	PSHS	X		hidden argument
+	JSR	_mul_unsigned_neg
+	LEAS	14,S
+	LEAX	-36,U		address of struct/union returned by mul_unsigned_neg()
+	TFR	X,D		address of source number
+	LEAX	-133,U		variable fx_o
+	LBSR	copyDWord
+* Line main.c:361: init of variable fx
+	LDB	#$12		optim: lddToLDB
+	CLRA			request zero extension
+	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
+	LEAX	-133,U		variable `fx_o', declared at main.c:360
 	PSHS	X		address of input dword to be shifted
-	LEAX	-44,U		temporary destination, type long
+	LEAX	-24,U		temporary destination, type unsigned long
 	LBSR	rightShiftDWord	preserves X
 	LEAS	4,S
-	TFR	X,D		address of source number
-	LEAX	-136,U		variable fx
-	LBSR	copyDWord
-* Line main.c:360: init of variable fy
-	CLRA
-	LDB	#$12		decimal 18 signed
-	LDA	#$FF		request sign extension
-	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
-* Push right operand of mul.
+	TFR	X,D		cast to `int': address of source number in D
+	LEAS	-2,S		result of cast
+	LEAX	,S
+	LBSR	initWordFromDWord
+	PULS	A,B		result of cast
+	STD	-129,U		variable fx
+* Line main.c:363: init of variable neg_fy
+	CLR	-127,U		init of variable neg_fy
+* Line main.c:364: init of variable fy_o
+* Line main.c:364: function call: mul_unsigned_neg()
+	LEAX	-127,U		variable `neg_fy', declared at main.c:363
+* optim: mergePushXPushD
+	LDD	#_mul16x16_u	address of mul16x16_u(), defined at main.c:97
+	PSHS	X,B,A		optim: mergePushXPushD
 	CLRA
 	LDB	#$0C		decimal 12 signed
 	LDA	#$FF		request sign extension
 	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
-	LEAX	-142,U		variable `r2z', declared at main.c:341
+	LEAX	-140,U		variable `r2z', declared at main.c:341
 	PSHS	X		address of input dword to be shifted
-	LEAX	-4,U		temporary destination, type long
+	LEAX	-8,U		temporary destination, type long
 	LBSR	rightShiftDWord	preserves X
 	LEAS	4,S
 	TFR	X,D		cast to `int': address of source number in D
@@ -2257,113 +2275,111 @@ L00205	EQU	*		else clause of if() started at main.c:347
 	LDX	#_recip_table+0	address of array recip_table (optim: removePCRIfRelocatabilityNotSupported)
 * optim: optimizeLoadDX
 	LDD	D,X		get r-value (optim: optimizeLoadDX)
-	LEAX	-8,U		destination of cast
+	LEAX	-12,U		destination of cast
 	LBSR	initDWordFromUnsignedWord
-	PSHS	X
-* Push left operand of mul.
+	LEAS	-4,S		pass long by value
+	LBSR	push4ByteStruct	C function argument 2 of mul_unsigned_neg(): long
 	CLRA
 	LDB	#$08		decimal 8 signed
 	LDA	#$FF		request sign extension
 	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
-	LEAX	-146,U		variable `r2y', declared at main.c:340
+	LEAX	-144,U		variable `r2y', declared at main.c:340
 	PSHS	X		address of input dword to be shifted
-	LEAX	-12,U		temporary destination, type long
+	LEAX	-16,U		temporary destination, type long
 	LBSR	rightShiftDWord	preserves X
-	LEAS	4,S
-	PSHS	X
-	LEAX	-20,U		temporary destination, type long
-	LBSR	mulDWordDWord	preserves X
-	LEAS	4,S
-	PSHS	X		address of input dword to be shifted
-	LEAX	-24,U		temporary destination, type long
-	LBSR	rightShiftDWord	preserves X
-	LEAS	4,S
+* optim: removeConsecutiveLEASInstructions
+* optim: removeConsecutiveLEASInstructions
+	LBSR	push4ByteStruct	C function argument 1 of mul_unsigned_neg(): long
+	LEAX	-20,U		address of struct/union to be returned by mul_unsigned_neg()
+	PSHS	X		hidden argument
+	JSR	_mul_unsigned_neg
+	LEAS	14,S
+	LEAX	-20,U		address of struct/union returned by mul_unsigned_neg()
 	TFR	X,D		address of source number
-	LEAX	-132,U		variable fy
+	LEAX	-126,U		variable fy_o
 	LBSR	copyDWord
-* Line main.c:362: if
-* push right operand of comparison
-	CLRA
-	LDB	#$7F		decimal 127 signed
-	PSHS	B,A
-* push left operand of comparison
-	LEAX	-136,U		variable `fx', declared at main.c:359
-	PSHS	X
-	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
+* Line main.c:365: init of variable fy
+	LDB	#$12		optim: lddToLDB
+	CLRA			request zero extension
+	PSHS	B,A		A=sign/zero ext flag, B=number of bits to shift
+	LEAX	-126,U		variable `fy_o', declared at main.c:364
+	PSHS	X		address of input dword to be shifted
+	LEAX	-4,U		temporary destination, type unsigned long
+	LBSR	rightShiftDWord	preserves X
 	LEAS	4,S
-	BGT	L00207
+	TFR	X,D		cast to `int': address of source number in D
+	LEAS	-2,S		result of cast
+	LEAX	,S
+	LBSR	initWordFromDWord
+	PULS	A,B		result of cast
+	STD	-122,U		variable fy
+* Line main.c:367: if
+	LDD	-129,U		variable fx
+	CMPD	#$7F
+	BGT	L00205
 * optim: branchToNextLocation
-* Useless label L00211 removed
-* push right operand of comparison
-	LDD	#$FF81		constant expression: 65409 decimal, signed
-	PSHS	B,A
-* push left operand of comparison
-	LEAX	-136,U		variable `fx', declared at main.c:359
-	PSHS	X
-	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
-	LEAS	4,S
-	BLT	L00207
-* optim: branchToNextLocation
-* Useless label L00210 removed
-* push right operand of comparison
-	CLRA
-	LDB	#$7F		decimal 127 signed
-	PSHS	B,A
-* push left operand of comparison
-	LEAX	-132,U		variable `fy', declared at main.c:360
-	PSHS	X
-	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
-	LEAS	4,S
-	BGT	L00207
-* optim: branchToNextLocation
-* Useless label L00209 removed
-* push right operand of comparison
-	LDD	#$FF81		constant expression: 65409 decimal, signed
-	PSHS	B,A
-* push left operand of comparison
-	LEAX	-132,U		variable `fy', declared at main.c:360
-	PSHS	X
-	LBSR	cmpDWordSignedInt	sets N, Z, V, C; preserves X
-	LEAS	4,S
-	BGE	L00208		 (optim: condBranchOverUncondBranch)
+* Useless label L00207 removed
+	LDD	-122,U		variable fy
+	CMPD	#$7F
+	BLE	L00206		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-L00207	EQU	*		then clause of if() started at main.c:362
-* Line main.c:362
-* Line main.c:363: assignment: =
+L00205	EQU	*		then clause of if() started at main.c:367
+* Line main.c:367
+* Line main.c:368: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[10,U]		optim: optimizeLdx
-* Line main.c:364: assignment: =
+* Line main.c:369: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	10,U		variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	2,X		optim: optimizeLeax
-	BRA	L00049		return (main.c:365)
-L00208	EQU	*		else clause of if() started at main.c:362
+	BRA	L00049		return (main.c:370)
+L00206	EQU	*		else clause of if() started at main.c:367
+* Useless label L00208 removed
+* Line main.c:373: if
+	LDB	-134,U		variable `neg_fx', declared at main.c:359
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00210		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00209 removed
+* Line main.c:373
+* Line main.c:374: assignment: =
+	CLRA			Negation of variable fx
+	CLRB
+	SUBD	-129,U
+	STD	-129,U
+L00210	EQU	*		else clause of if() started at main.c:373
+* Useless label L00211 removed
+* Line main.c:376: if
+	LDB	-127,U		variable `neg_fy', declared at main.c:363
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00213		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
 * Useless label L00212 removed
-* Line main.c:368: assignment: =
-	LEAX	-136,U		variable `fx', declared at main.c:359
-	TFR	X,D		cast to `char': address of source number in D
-	LEAS	-1,S		result of cast
-	LEAX	,S
-	LBSR	initByteFromDWord
-	PULS	B		result of cast
+* Line main.c:376
+* Line main.c:377: assignment: =
+	CLRA			Negation of variable fy
+	CLRB
+	SUBD	-122,U
+	STD	-122,U
+L00213	EQU	*		else clause of if() started at main.c:376
+* Useless label L00214 removed
+* Line main.c:383: assignment: =
+	LDD	-129,U		variable `fx', declared at main.c:361
+* Cast from `int' to byte: result already in B
 	SEX
 * optim: stripUselessPushPull
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[10,U]		optim: optimizeLdx
-* Line main.c:369: assignment: =
-	LEAX	-132,U		variable `fy', declared at main.c:360
-	TFR	X,D		cast to `char': address of source number in D
-	LEAS	-1,S		result of cast
-	LEAX	,S
-	LBSR	initByteFromDWord
-	PULS	B		result of cast
+* Line main.c:384: assignment: =
+	LDD	-122,U		variable `fy', declared at main.c:365
+* Cast from `int' to byte: result already in B
 	SEX
 * optim: stripUselessPushPull
 	LDX	10,U		variable out
@@ -2381,7 +2397,7 @@ _drawcube	EXPORT
 
 *******************************************************************************
 
-* FUNCTION drawcube(): defined at main.c:376
+* FUNCTION drawcube(): defined at main.c:391
 _drawcube	EQU	*
 * Prototype: void drawcube(struct AnonStruct_main.c:26 *, char[] *)
 * Calling convention: 0 (CMOC Default)
@@ -2389,29 +2405,29 @@ _drawcube	EQU	*
 	LEAU	,S
 	LEAS	-49,S
 * Formal parameter(s):
-*      4,U:    2 bytes: cube: struct AnonStruct_main.c:26 *: line 376
-*      6,U:    2 bytes: edges: char[] *: line 376
+*      4,U:    2 bytes: cube: struct AnonStruct_main.c:26 *: line 391
+*      6,U:    2 bytes: edges: char[] *: line 391
 * Local non-static variable(s):
-*    -49,U:    4 bytes: p1: struct AnonStruct_main.c:16: line 404
-*    -45,U:    4 bytes: p2: struct AnonStruct_main.c:16: line 405
-*    -41,U:    1 byte : move_dy: char: line 412
-*    -40,U:    1 byte : move_dx: char: line 413
-*    -39,U:    1 byte : deltax: char: line 422
-*    -38,U:    1 byte : deltay: char: line 423
-*    -37,U:    1 byte : i: unsigned char: line 380
-*    -37,U:    1 byte : i: unsigned char: line 401
-*    -36,U:   32 bytes: pts: struct AnonStruct_main.c:16[]: line 379
-*     -4,U:    1 byte : currentposx: char: line 389
-*     -3,U:    1 byte : currentposy: char: line 390
-*     -2,U:    1 byte : newposx: char: line 391
-*     -1,U:    1 byte : newposy: char: line 392
-* Line main.c:380: for init
-* Line main.c:380: init of variable i
+*    -49,U:    4 bytes: p1: struct AnonStruct_main.c:16: line 419
+*    -45,U:    4 bytes: p2: struct AnonStruct_main.c:16: line 420
+*    -41,U:    1 byte : move_dy: char: line 427
+*    -40,U:    1 byte : move_dx: char: line 428
+*    -39,U:    1 byte : deltax: char: line 437
+*    -38,U:    1 byte : deltay: char: line 438
+*    -37,U:    1 byte : i: unsigned char: line 395
+*    -37,U:    1 byte : i: unsigned char: line 416
+*    -36,U:   32 bytes: pts: struct AnonStruct_main.c:16[]: line 394
+*     -4,U:    1 byte : currentposx: char: line 404
+*     -3,U:    1 byte : currentposy: char: line 405
+*     -2,U:    1 byte : newposx: char: line 406
+*     -1,U:    1 byte : newposy: char: line 407
+* Line main.c:395: for init
+* Line main.c:395: init of variable i
 	CLR	-37,U		init of variable i
-	LBRA	L00214		jump to for condition
-L00213	EQU	*
-* Line main.c:380: for body
-* Line main.c:381: if
+	LBRA	L00216		jump to for condition
+L00215	EQU	*
+* Line main.c:395: for body
+* Line main.c:396: if
 	LDB	-37,U		variable i
 * optim: stripOpToDeadReg
 	LDA	#6		size of array element
@@ -2420,11 +2436,11 @@ L00213	EQU	*
 * optim: optimizeLoadDX
 	LDD	D,X		member x of AnonStruct_main.c:26 (optim: optimizeLoadDX)
 	CMPD	#65408
-	BNE	L00218		 (optim: condBranchOverUncondBranch)
+	BNE	L00220		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00217 removed
-* Line main.c:381
-* Line main.c:382: assignment: =
+* Useless label L00219 removed
+* Line main.c:396
+* Line main.c:397: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 	PSHS	B,A		right side of assignment
 	LDB	-37,U		variable i
@@ -2437,7 +2453,7 @@ L00213	EQU	*
 	LEAX	D,X		add offset
 	PULS	A,B		retrieve value to store
 	STD	,X
-* Line main.c:383: assignment: =
+* Line main.c:398: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 	PSHS	B,A		right side of assignment
 	LDB	-37,U		variable i
@@ -2451,10 +2467,10 @@ L00213	EQU	*
 * optim: optimizeLeax
 	PULS	A,B		retrieve value to store
 	STD	2,X		optim: optimizeLeax
-	BRA	L00219		jump over else clause
-L00218	EQU	*		else clause of if() started at main.c:381
-* Line main.c:384
-* Line main.c:385: function call: project_point()
+	BRA	L00221		jump over else clause
+L00220	EQU	*		else clause of if() started at main.c:396
+* Line main.c:399
+* Line main.c:400: function call: project_point()
 	LDB	-37,U		variable i
 	CLRA			index expression is of byte type
 	LSLB
@@ -2475,30 +2491,30 @@ L00218	EQU	*		else clause of if() started at main.c:381
 	LBSR	pushSmallStruct	C function argument 1 of project_point(): struct AnonStruct_main.c:26
 	JSR	_project_point
 	LEAS	8,S
-L00219	EQU	*		end of if() started at main.c:381
-* Useless label L00215 removed
-* Line main.c:380: for increment(s)
+L00221	EQU	*		end of if() started at main.c:396
+* Useless label L00217 removed
+* Line main.c:395: for increment(s)
 	INC	-37,U
-L00214	EQU	*
-* Line main.c:380: for condition
+L00216	EQU	*
+* Line main.c:395: for condition
 	LDB	-37,U		variable i
 	CMPB	#$08
-	LBLO	L00213
+	LBLO	L00215
 * optim: branchToNextLocation
-* Useless label L00216 removed
-* Line main.c:393: assignment: =
+* Useless label L00218 removed
+* Line main.c:408: assignment: =
 	CLR	-4,U		assignment to variable currentposx
-* Line main.c:394: assignment: =
+* Line main.c:409: assignment: =
 	CLR	-3,U		assignment to variable currentposy
-* Line main.c:397: function call: reset_beam()
+* Line main.c:412: function call: reset_beam()
 	JSR	_reset_beam
-* Line main.c:401: for init
-* Line main.c:401: init of variable i
+* Line main.c:416: for init
+* Line main.c:416: init of variable i
 	CLR	-37,U		init of variable i
-	LBRA	L00221		jump to for condition
-L00220	EQU	*
-* Line main.c:401: for body
-* Line main.c:402: if
+	LBRA	L00223		jump to for condition
+L00222	EQU	*
+* Line main.c:416: for body
+* Line main.c:417: if
 	LDB	-37,U		variable i
 	CLRA			index expression is of byte type
 	LSLB
@@ -2509,14 +2525,14 @@ L00220	EQU	*
 * optim: stripConsecOppositeTFRs
 	LDB	,X		get r-value
 	CMPB	#255
-	LBEQ	L00222		 (optim: condBranchOverUncondBranch) (optim: condBranchOverUncondBranch)
+	LBEQ	L00224		 (optim: condBranchOverUncondBranch) (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00224 removed
-* Line main.c:402
-* optim: condBranchOverUncondBranch
-* Useless label L00225 removed
 * Useless label L00226 removed
-* Line main.c:404: init of variable p1
+* Line main.c:417
+* optim: condBranchOverUncondBranch
+* Useless label L00227 removed
+* Useless label L00228 removed
+* Line main.c:419: init of variable p1
 	LDB	-37,U		variable i
 	CLRA			index expression is of byte type
 	LSLB
@@ -2538,7 +2554,7 @@ L00220	EQU	*
 	LEAX	-49,U		destination struct: p1
 	LBSR	copyMem		initialize struct
 	LEAS	2,S
-* Line main.c:405: init of variable p2
+* Line main.c:420: init of variable p2
 	LDB	-37,U		variable i
 	CLRA			index expression is of byte type
 	LSLB
@@ -2561,107 +2577,107 @@ L00220	EQU	*
 	LEAX	-45,U		destination struct: p2
 	LBSR	copyMem		initialize struct
 	LEAS	2,S
-* Line main.c:407: if
+* Line main.c:422: if
 	LDD	-49,U		member x of AnonStruct_main.c:16, via variable p1
 	CMPD	#65408
-	LBEQ	L00222
+	LBEQ	L00224
 * optim: branchToNextLocation
-* Useless label L00229 removed
+* Useless label L00231 removed
 	LDD	-45,U		member x of AnonStruct_main.c:16, via variable p2
 	CMPD	#65408
-	LBEQ	L00222		 (optim: condBranchOverUncondBranch) (optim: condBranchOverUncondBranch)
+	LBEQ	L00224		 (optim: condBranchOverUncondBranch) (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00227 removed
-* Line main.c:407
+* Useless label L00229 removed
+* Line main.c:422
 * optim: condBranchOverUncondBranch
-* Useless label L00228 removed
 * Useless label L00230 removed
-* Line main.c:409: assignment: =
+* Useless label L00232 removed
+* Line main.c:424: assignment: =
 	LDD	-49,U		member x of AnonStruct_main.c:16, via variable p1
 	STB	-2,U
-* Line main.c:410: assignment: =
+* Line main.c:425: assignment: =
 	LDD	-47,U		member y of AnonStruct_main.c:16, via variable p1
 	STB	-1,U
-* Line main.c:412: init of variable move_dy
+* Line main.c:427: init of variable move_dy
 * optim: storeLoad
 	SUBB	-3,U		variable currentposy
 	STB	-41,U		variable move_dy
-* Line main.c:413: init of variable move_dx
+* Line main.c:428: init of variable move_dx
 	LDB	-2,U		variable newposx
 	SUBB	-4,U		variable currentposx
 	STB	-40,U		variable move_dx
-* Line main.c:415: if
+* Line main.c:430: if
 * optim: storeLoad
 * optim: loadCmpZeroBeqOrBne
-	BNE	L00231
+	BNE	L00233
 * optim: branchToNextLocation
-* Useless label L00233 removed
-	LDB	-41,U		variable `move_dy', declared at main.c:412
+* Useless label L00235 removed
+	LDB	-41,U		variable `move_dy', declared at main.c:427
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00232		 (optim: condBranchOverUncondBranch)
+	BEQ	L00234		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-L00231	EQU	*		then clause of if() started at main.c:415
-* Line main.c:415
-* Line main.c:416: function call: move()
-	LDB	-40,U		variable `move_dx', declared at main.c:413
+L00233	EQU	*		then clause of if() started at main.c:430
+* Line main.c:430
+* Line main.c:431: function call: move()
+	LDB	-40,U		variable `move_dx', declared at main.c:428
 	SEX			promoting byte argument to word
 	PSHS	B,A		C function argument 2 of move(): char
-	LDB	-41,U		variable `move_dy', declared at main.c:412
+	LDB	-41,U		variable `move_dy', declared at main.c:427
 	SEX			promoting byte argument to word
 	PSHS	B,A		C function argument 1 of move(): char
 	JSR	_move
 	LEAS	4,S
-* Line main.c:418: assignment: =
-	LDB	-2,U		variable `newposx', declared at main.c:391
+* Line main.c:433: assignment: =
+	LDB	-2,U		variable `newposx', declared at main.c:406
 	STB	-4,U
-* Line main.c:419: assignment: =
-	LDB	-1,U		variable `newposy', declared at main.c:392
+* Line main.c:434: assignment: =
+	LDB	-1,U		variable `newposy', declared at main.c:407
 	STB	-3,U
-L00232	EQU	*		else clause of if() started at main.c:415
-* Useless label L00234 removed
-* Line main.c:422: init of variable deltax
+L00234	EQU	*		else clause of if() started at main.c:430
+* Useless label L00236 removed
+* Line main.c:437: init of variable deltax
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
 	LDD	-45,U		member x of AnonStruct_main.c:16, via variable p2
 	SUBD	-49,U		optim: optimizeStackOperations4
 	STB	-39,U		variable deltax
-* Line main.c:423: init of variable deltay
+* Line main.c:438: init of variable deltay
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
 	LDD	-43,U		member y of AnonStruct_main.c:16, via variable p2
 	SUBD	-47,U		optim: optimizeStackOperations4
 	STB	-38,U		variable deltay
-* Line main.c:425: function call: line()
-	LDB	-39,U		variable `deltax', declared at main.c:422
+* Line main.c:440: function call: line()
+	LDB	-39,U		variable `deltax', declared at main.c:437
 	SEX			promoting byte argument to word
 	PSHS	B,A		C function argument 2 of line(): char
-	LDB	-38,U		variable `deltay', declared at main.c:423
+	LDB	-38,U		variable `deltay', declared at main.c:438
 	SEX			promoting byte argument to word
 	PSHS	B,A		C function argument 1 of line(): char
 	JSR	_line
 	LEAS	4,S
-* Line main.c:427: assignment: +=
+* Line main.c:442: assignment: +=
 	LDB	-4,U		variable currentposx
 	ADDB	-39,U		variable deltax
 	STB	-4,U		variable currentposx
-* Line main.c:428: assignment: +=
+* Line main.c:443: assignment: +=
 	LDB	-3,U		variable currentposy
 	ADDB	-38,U		variable deltay
 	STB	-3,U		variable currentposy
-L00222	EQU	*
-* Line main.c:401: for increment(s)
+L00224	EQU	*
+* Line main.c:416: for increment(s)
 	INC	-37,U
-L00221	EQU	*
-* Line main.c:401: for condition
+L00223	EQU	*
+* Line main.c:416: for condition
 	LDB	-37,U		variable i
 	CMPB	#$0C
-	LBLO	L00220
+	LBLO	L00222
 * optim: branchToNextLocation
-* Useless label L00223 removed
+* Useless label L00225 removed
 * Useless label L00050 removed
 	LEAS	,U
 	PULS	U,PC
-* END FUNCTION drawcube(): defined at main.c:376
+* END FUNCTION drawcube(): defined at main.c:391
 funcend_drawcube	EQU *
 funcsize_drawcube	EQU	funcend_drawcube-_drawcube
 _createcubeat	EXPORT
@@ -2669,7 +2685,7 @@ _createcubeat	EXPORT
 
 *******************************************************************************
 
-* FUNCTION createcubeat(): defined at main.c:432
+* FUNCTION createcubeat(): defined at main.c:447
 _createcubeat	EQU	*
 * Prototype: void createcubeat(struct AnonStruct_main.c:26, char[] *, struct AnonStruct_main.c:26 *)
 * Calling convention: 0 (CMOC Default)
@@ -2677,32 +2693,32 @@ _createcubeat	EQU	*
 	LEAU	,S
 	LEAS	-21,S
 * Formal parameter(s):
-*      4,U:    6 bytes: cubepos: struct AnonStruct_main.c:26: line 432
-*     10,U:    2 bytes: edges: char[] *: line 432
-*     12,U:    2 bytes: out: struct AnonStruct_main.c:26 *: line 432
+*      4,U:    6 bytes: cubepos: struct AnonStruct_main.c:26: line 447
+*     10,U:    2 bytes: edges: char[] *: line 447
+*     12,U:    2 bytes: out: struct AnonStruct_main.c:26 *: line 447
 * Local non-static variable(s):
-*    -21,U:    1 byte : x: char: line 467
-*    -20,U:    1 byte : y: char: line 468
-*    -19,U:    1 byte : z: char: line 469
-*    -18,U:    1 byte : upBlock: char: line 472
-*    -17,U:    1 byte : downBlock: char: line 473
-*    -16,U:    1 byte : leftBlock: char: line 475
-*    -15,U:    1 byte : rightBlock: char: line 476
-*    -14,U:    1 byte : frontBlock: char: line 478
-*    -13,U:    1 byte : backBlock: char: line 479
-*    -12,U:    1 byte : upInvis: char: line 482
-*    -11,U:    1 byte : downInvis: char: line 483
-*    -10,U:    1 byte : leftInvis: char: line 485
-*     -9,U:    1 byte : rightInvis: char: line 486
-*     -8,U:    1 byte : frontInvis: char: line 488
-*     -7,U:    1 byte : backInvis: char: line 489
-*     -6,U:    1 byte : up: char: line 492
-*     -5,U:    1 byte : down: char: line 493
-*     -4,U:    1 byte : left: char: line 495
-*     -3,U:    1 byte : right: char: line 496
-*     -2,U:    1 byte : front: char: line 498
-*     -1,U:    1 byte : back: char: line 499
-* Line main.c:434: assignment: =
+*    -21,U:    1 byte : x: char: line 482
+*    -20,U:    1 byte : y: char: line 483
+*    -19,U:    1 byte : z: char: line 484
+*    -18,U:    1 byte : upBlock: char: line 487
+*    -17,U:    1 byte : downBlock: char: line 488
+*    -16,U:    1 byte : leftBlock: char: line 490
+*    -15,U:    1 byte : rightBlock: char: line 491
+*    -14,U:    1 byte : frontBlock: char: line 493
+*    -13,U:    1 byte : backBlock: char: line 494
+*    -12,U:    1 byte : upInvis: char: line 497
+*    -11,U:    1 byte : downInvis: char: line 498
+*    -10,U:    1 byte : leftInvis: char: line 500
+*     -9,U:    1 byte : rightInvis: char: line 501
+*     -8,U:    1 byte : frontInvis: char: line 503
+*     -7,U:    1 byte : backInvis: char: line 504
+*     -6,U:    1 byte : up: char: line 507
+*     -5,U:    1 byte : down: char: line 508
+*     -4,U:    1 byte : left: char: line 510
+*     -3,U:    1 byte : right: char: line 511
+*     -2,U:    1 byte : front: char: line 513
+*     -1,U:    1 byte : back: char: line 514
+* Line main.c:449: assignment: =
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -2712,7 +2728,7 @@ _createcubeat	EQU	*
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[12,U]		optim: optimizeLdx
-* Line main.c:435: assignment: =
+* Line main.c:450: assignment: =
 * LDD #$08 optim: optimizeStackOperations1
 * PSHS B,A optim: optimizeStackOperations1
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
@@ -2722,7 +2738,7 @@ _createcubeat	EQU	*
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	2,X		optim: optimizeLeax
-* Line main.c:436: assignment: =
+* Line main.c:451: assignment: =
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -2733,14 +2749,14 @@ _createcubeat	EQU	*
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	4,X		optim: optimizeLeax
-* Line main.c:438: assignment: =
+* Line main.c:453: assignment: =
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	6,X		optim: optimizeLeax
-* Line main.c:439: assignment: =
+* Line main.c:454: assignment: =
 * LDD #$08 optim: optimizeStackOperations1
 * PSHS B,A optim: optimizeStackOperations1
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
@@ -2751,7 +2767,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	8,X		optim: optimizeLeax
-* Line main.c:440: assignment: =
+* Line main.c:455: assignment: =
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -2763,14 +2779,14 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	10,X		optim: optimizeLeax
-* Line main.c:442: assignment: =
+* Line main.c:457: assignment: =
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	12,X		optim: optimizeLeax
-* Line main.c:443: assignment: =
+* Line main.c:458: assignment: =
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2778,7 +2794,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	14,X		optim: optimizeLeax
-* Line main.c:444: assignment: =
+* Line main.c:459: assignment: =
 * LDD #$08 optim: optimizeStackOperations1
 * PSHS B,A optim: optimizeStackOperations1
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
@@ -2789,7 +2805,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	16,X		optim: optimizeLeax
-* Line main.c:446: assignment: =
+* Line main.c:461: assignment: =
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -2800,7 +2816,7 @@ _createcubeat	EQU	*
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	18,X		optim: optimizeLeax
-* Line main.c:447: assignment: =
+* Line main.c:462: assignment: =
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2808,7 +2824,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	20,X		optim: optimizeLeax
-* Line main.c:448: assignment: =
+* Line main.c:463: assignment: =
 * LDD #$08 optim: optimizeStackOperations1
 * PSHS B,A optim: optimizeStackOperations1
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
@@ -2819,7 +2835,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	22,X		optim: optimizeLeax
-* Line main.c:450: assignment: =
+* Line main.c:465: assignment: =
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -2830,7 +2846,7 @@ _createcubeat	EQU	*
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	24,X		optim: optimizeLeax
-* Line main.c:451: assignment: =
+* Line main.c:466: assignment: =
 * LDD #$08 optim: optimizeStackOperations1
 * PSHS B,A optim: optimizeStackOperations1
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
@@ -2841,7 +2857,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	26,X		optim: optimizeLeax
-* Line main.c:452: assignment: =
+* Line main.c:467: assignment: =
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2849,14 +2865,14 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	28,X		optim: optimizeLeax
-* Line main.c:454: assignment: =
+* Line main.c:469: assignment: =
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	30,X		optim: optimizeLeax
-* Line main.c:455: assignment: =
+* Line main.c:470: assignment: =
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -2868,7 +2884,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	32,X		optim: optimizeLeax
-* Line main.c:456: assignment: =
+* Line main.c:471: assignment: =
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2876,14 +2892,14 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	34,X		optim: optimizeLeax
-* Line main.c:458: assignment: =
+* Line main.c:473: assignment: =
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	36,X		optim: optimizeLeax
-* Line main.c:459: assignment: =
+* Line main.c:474: assignment: =
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2891,7 +2907,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	38,X		optim: optimizeLeax
-* Line main.c:460: assignment: =
+* Line main.c:475: assignment: =
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2899,7 +2915,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	40,X		optim: optimizeLeax
-* Line main.c:462: assignment: =
+* Line main.c:477: assignment: =
 * LDD #$08 optim: optimizeStackOperations1
 * PSHS B,A optim: optimizeStackOperations1
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable cubepos
@@ -2909,7 +2925,7 @@ _createcubeat	EQU	*
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	42,X		optim: optimizeLeax
-* Line main.c:463: assignment: =
+* Line main.c:478: assignment: =
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2917,7 +2933,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	44,X		optim: optimizeLeax
-* Line main.c:464: assignment: =
+* Line main.c:479: assignment: =
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -2925,7 +2941,7 @@ _createcubeat	EQU	*
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	46,X		optim: optimizeLeax
-* Line main.c:467: init of variable x
+* Line main.c:482: init of variable x
 	LDD	4,U		member x of AnonStruct_main.c:26, via variable cubepos
 	ASRA
 	RORB
@@ -2934,7 +2950,7 @@ _createcubeat	EQU	*
 	ASRA
 	RORB
 	STB	-21,U		variable x
-* Line main.c:468: init of variable y
+* Line main.c:483: init of variable y
 	LDD	6,U		member y of AnonStruct_main.c:26, via variable cubepos
 	ASRA
 	RORB
@@ -2943,7 +2959,7 @@ _createcubeat	EQU	*
 	ASRA
 	RORB
 	STB	-20,U		variable y
-* Line main.c:469: init of variable z
+* Line main.c:484: init of variable z
 	LDD	8,U		member z of AnonStruct_main.c:26, via variable cubepos
 	ASRA
 	RORB
@@ -2952,103 +2968,27 @@ _createcubeat	EQU	*
 	ASRA
 	RORB
 	STB	-19,U		variable z
-* Line main.c:472: init of variable upBlock
+* Line main.c:487: init of variable upBlock
 	LDB	-20,U		variable y
 	CMPB	#$02
-	BLT	L00236		if true
+	BLT	L00238		if true
 	CLRB
-	BRA	L00237		false
-L00236	EQU	*
-	LDB	#1
-L00237	EQU	*
-	TSTB			&&
-	BEQ	L00235		&& at main.c:472 yields false, B == 0
-	LDB	-19,U		variable z
-	SEX			extend byte index expression
-	PSHS	B,A		preserve array index
-	LDB	-20,U		variable y
-	ADDB	#$01		1
-	SEX			index expression is of byte type
-	LDX	#3		size of array element
-	LBSR	MUL16		get offset in bytes in D
-	PSHS	B,A		preserve array index
-	LDB	-21,U		variable x
-	SEX			index expression is of byte type
-	LDX	#9		size of array element
-	LBSR	MUL16		get offset in bytes in D
-	LDX	#_world+0	address of array world (optim: removePCRIfRelocatabilityNotSupported)
-	LEAX	D,X		add offset
-	TFR	X,D		array address as r-value
-	ADDD	,S++		add stacked array index to array address in D
-	TFR	D,X		put resulting address in X
-* optim: stripConsecOppositeTFRs
-	ADDD	,S++		add stacked array index to array address in D
-	TFR	D,X		put resulting address in X
-	LDB	,X		get r-value
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00235		&& at main.c:472 yields false, B == 0
-	LDB	#1		&& yields true
-L00235	EQU	*
-	STB	-18,U		variable upBlock
-* Line main.c:473: init of variable downBlock
-	LDB	-20,U		variable y
-	CMPB	#$00
-	BGT	L00239		if true
-	CLRB
-	BRA	L00240		false
-L00239	EQU	*
-	LDB	#1
-L00240	EQU	*
-	TSTB			&&
-	BEQ	L00238		&& at main.c:473 yields false, B == 0
-	LDB	-19,U		variable z
-	SEX			extend byte index expression
-	PSHS	B,A		preserve array index
-	LDB	-20,U		variable y
-	ADDB	#$FF		255
-	SEX			index expression is of byte type
-	LDX	#3		size of array element
-	LBSR	MUL16		get offset in bytes in D
-	PSHS	B,A		preserve array index
-	LDB	-21,U		variable x
-	SEX			index expression is of byte type
-	LDX	#9		size of array element
-	LBSR	MUL16		get offset in bytes in D
-	LDX	#_world+0	address of array world (optim: removePCRIfRelocatabilityNotSupported)
-	LEAX	D,X		add offset
-	TFR	X,D		array address as r-value
-	ADDD	,S++		add stacked array index to array address in D
-	TFR	D,X		put resulting address in X
-* optim: stripConsecOppositeTFRs
-	ADDD	,S++		add stacked array index to array address in D
-	TFR	D,X		put resulting address in X
-	LDB	,X		get r-value
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00238		&& at main.c:473 yields false, B == 0
-	LDB	#1		&& yields true
+	BRA	L00239		false
 L00238	EQU	*
-	STB	-17,U		variable downBlock
-* Line main.c:475: init of variable leftBlock
-	LDB	-21,U		variable x
-	CMPB	#$00
-	BGT	L00242		if true
-	CLRB
-	BRA	L00243		false
-L00242	EQU	*
 	LDB	#1
-L00243	EQU	*
+L00239	EQU	*
 	TSTB			&&
-	BEQ	L00241		&& at main.c:475 yields false, B == 0
+	BEQ	L00237		&& at main.c:487 yields false, B == 0
 	LDB	-19,U		variable z
 	SEX			extend byte index expression
 	PSHS	B,A		preserve array index
 	LDB	-20,U		variable y
+	ADDB	#$01		1
 	SEX			index expression is of byte type
 	LDX	#3		size of array element
 	LBSR	MUL16		get offset in bytes in D
 	PSHS	B,A		preserve array index
 	LDB	-21,U		variable x
-	ADDB	#$FF		255
 	SEX			index expression is of byte type
 	LDX	#9		size of array element
 	LBSR	MUL16		get offset in bytes in D
@@ -3062,31 +3002,31 @@ L00243	EQU	*
 	TFR	D,X		put resulting address in X
 	LDB	,X		get r-value
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00241		&& at main.c:475 yields false, B == 0
+	BEQ	L00237		&& at main.c:487 yields false, B == 0
 	LDB	#1		&& yields true
+L00237	EQU	*
+	STB	-18,U		variable upBlock
+* Line main.c:488: init of variable downBlock
+	LDB	-20,U		variable y
+	CMPB	#$00
+	BGT	L00241		if true
+	CLRB
+	BRA	L00242		false
 L00241	EQU	*
-	STB	-16,U		variable leftBlock
-* Line main.c:476: init of variable rightBlock
-	LDB	-21,U		variable x
-	CMPB	#$02
-	BLT	L00245		if true
-	CLRB
-	BRA	L00246		false
-L00245	EQU	*
 	LDB	#1
-L00246	EQU	*
+L00242	EQU	*
 	TSTB			&&
-	BEQ	L00244		&& at main.c:476 yields false, B == 0
+	BEQ	L00240		&& at main.c:488 yields false, B == 0
 	LDB	-19,U		variable z
 	SEX			extend byte index expression
 	PSHS	B,A		preserve array index
 	LDB	-20,U		variable y
+	ADDB	#$FF		255
 	SEX			index expression is of byte type
 	LDX	#3		size of array element
 	LBSR	MUL16		get offset in bytes in D
 	PSHS	B,A		preserve array index
 	LDB	-21,U		variable x
-	ADDB	#$01		1
 	SEX			index expression is of byte type
 	LDX	#9		size of array element
 	LBSR	MUL16		get offset in bytes in D
@@ -3100,21 +3040,97 @@ L00246	EQU	*
 	TFR	D,X		put resulting address in X
 	LDB	,X		get r-value
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00244		&& at main.c:476 yields false, B == 0
+	BEQ	L00240		&& at main.c:488 yields false, B == 0
 	LDB	#1		&& yields true
+L00240	EQU	*
+	STB	-17,U		variable downBlock
+* Line main.c:490: init of variable leftBlock
+	LDB	-21,U		variable x
+	CMPB	#$00
+	BGT	L00244		if true
+	CLRB
+	BRA	L00245		false
 L00244	EQU	*
+	LDB	#1
+L00245	EQU	*
+	TSTB			&&
+	BEQ	L00243		&& at main.c:490 yields false, B == 0
+	LDB	-19,U		variable z
+	SEX			extend byte index expression
+	PSHS	B,A		preserve array index
+	LDB	-20,U		variable y
+	SEX			index expression is of byte type
+	LDX	#3		size of array element
+	LBSR	MUL16		get offset in bytes in D
+	PSHS	B,A		preserve array index
+	LDB	-21,U		variable x
+	ADDB	#$FF		255
+	SEX			index expression is of byte type
+	LDX	#9		size of array element
+	LBSR	MUL16		get offset in bytes in D
+	LDX	#_world+0	address of array world (optim: removePCRIfRelocatabilityNotSupported)
+	LEAX	D,X		add offset
+	TFR	X,D		array address as r-value
+	ADDD	,S++		add stacked array index to array address in D
+	TFR	D,X		put resulting address in X
+* optim: stripConsecOppositeTFRs
+	ADDD	,S++		add stacked array index to array address in D
+	TFR	D,X		put resulting address in X
+	LDB	,X		get r-value
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00243		&& at main.c:490 yields false, B == 0
+	LDB	#1		&& yields true
+L00243	EQU	*
+	STB	-16,U		variable leftBlock
+* Line main.c:491: init of variable rightBlock
+	LDB	-21,U		variable x
+	CMPB	#$02
+	BLT	L00247		if true
+	CLRB
+	BRA	L00248		false
+L00247	EQU	*
+	LDB	#1
+L00248	EQU	*
+	TSTB			&&
+	BEQ	L00246		&& at main.c:491 yields false, B == 0
+	LDB	-19,U		variable z
+	SEX			extend byte index expression
+	PSHS	B,A		preserve array index
+	LDB	-20,U		variable y
+	SEX			index expression is of byte type
+	LDX	#3		size of array element
+	LBSR	MUL16		get offset in bytes in D
+	PSHS	B,A		preserve array index
+	LDB	-21,U		variable x
+	ADDB	#$01		1
+	SEX			index expression is of byte type
+	LDX	#9		size of array element
+	LBSR	MUL16		get offset in bytes in D
+	LDX	#_world+0	address of array world (optim: removePCRIfRelocatabilityNotSupported)
+	LEAX	D,X		add offset
+	TFR	X,D		array address as r-value
+	ADDD	,S++		add stacked array index to array address in D
+	TFR	D,X		put resulting address in X
+* optim: stripConsecOppositeTFRs
+	ADDD	,S++		add stacked array index to array address in D
+	TFR	D,X		put resulting address in X
+	LDB	,X		get r-value
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00246		&& at main.c:491 yields false, B == 0
+	LDB	#1		&& yields true
+L00246	EQU	*
 	STB	-15,U		variable rightBlock
-* Line main.c:478: init of variable frontBlock
+* Line main.c:493: init of variable frontBlock
 	LDB	-19,U		variable z
 	CMPB	#$02
-	BLT	L00248		if true
+	BLT	L00250		if true
 	CLRB
-	BRA	L00249		false
-L00248	EQU	*
+	BRA	L00251		false
+L00250	EQU	*
 	LDB	#1
-L00249	EQU	*
+L00251	EQU	*
 	TSTB			&&
-	BEQ	L00247		&& at main.c:478 yields false, B == 0
+	BEQ	L00249		&& at main.c:493 yields false, B == 0
 	LDB	-19,U		variable z
 	ADDB	#$01		1
 	SEX			extend byte index expression
@@ -3138,61 +3154,61 @@ L00249	EQU	*
 	TFR	D,X		put resulting address in X
 	LDB	,X		get r-value
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00247		&& at main.c:478 yields false, B == 0
+	BEQ	L00249		&& at main.c:493 yields false, B == 0
 	LDB	#1		&& yields true
-L00247	EQU	*
+L00249	EQU	*
 	STB	-14,U		variable frontBlock
-* Line main.c:479: init of variable backBlock
+* Line main.c:494: init of variable backBlock
 	LDB	-19,U		variable z
 	CMPB	#$00
-	BGT	L00251		if true
-	CLRB
-	BRA	L00252		false
-L00251	EQU	*
-	LDB	#1
-L00252	EQU	*
-	TSTB			&&
-	BEQ	L00250		&& at main.c:479 yields false, B == 0
-	LDB	-19,U		variable z
-	ADDB	#$FF		255
-	SEX			extend byte index expression
-	PSHS	B,A		preserve array index
-	LDB	-20,U		variable y
-	SEX			index expression is of byte type
-	LDX	#3		size of array element
-	LBSR	MUL16		get offset in bytes in D
-	PSHS	B,A		preserve array index
-	LDB	-21,U		variable x
-	SEX			index expression is of byte type
-	LDX	#9		size of array element
-	LBSR	MUL16		get offset in bytes in D
-	LDX	#_world+0	address of array world (optim: removePCRIfRelocatabilityNotSupported)
-	LEAX	D,X		add offset
-	TFR	X,D		array address as r-value
-	ADDD	,S++		add stacked array index to array address in D
-	TFR	D,X		put resulting address in X
-* optim: stripConsecOppositeTFRs
-	ADDD	,S++		add stacked array index to array address in D
-	TFR	D,X		put resulting address in X
-	LDB	,X		get r-value
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00250		&& at main.c:479 yields false, B == 0
-	LDB	#1		&& yields true
-L00250	EQU	*
-	STB	-13,U		variable backBlock
-* Line main.c:482: init of variable upInvis
-* optim: optimizeStackOperations4
-* optim: optimizeStackOperations4
-	LDD	_playerposition+2	member y of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
-	CMPD	6,U		optim: optimizeStackOperations4
-	BLE	L00253		if true
+	BGT	L00253		if true
 	CLRB
 	BRA	L00254		false
 L00253	EQU	*
 	LDB	#1
 L00254	EQU	*
+	TSTB			&&
+	BEQ	L00252		&& at main.c:494 yields false, B == 0
+	LDB	-19,U		variable z
+	ADDB	#$FF		255
+	SEX			extend byte index expression
+	PSHS	B,A		preserve array index
+	LDB	-20,U		variable y
+	SEX			index expression is of byte type
+	LDX	#3		size of array element
+	LBSR	MUL16		get offset in bytes in D
+	PSHS	B,A		preserve array index
+	LDB	-21,U		variable x
+	SEX			index expression is of byte type
+	LDX	#9		size of array element
+	LBSR	MUL16		get offset in bytes in D
+	LDX	#_world+0	address of array world (optim: removePCRIfRelocatabilityNotSupported)
+	LEAX	D,X		add offset
+	TFR	X,D		array address as r-value
+	ADDD	,S++		add stacked array index to array address in D
+	TFR	D,X		put resulting address in X
+* optim: stripConsecOppositeTFRs
+	ADDD	,S++		add stacked array index to array address in D
+	TFR	D,X		put resulting address in X
+	LDB	,X		get r-value
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00252		&& at main.c:494 yields false, B == 0
+	LDB	#1		&& yields true
+L00252	EQU	*
+	STB	-13,U		variable backBlock
+* Line main.c:497: init of variable upInvis
+* optim: optimizeStackOperations4
+* optim: optimizeStackOperations4
+	LDD	_playerposition+2	member y of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
+	CMPD	6,U		optim: optimizeStackOperations4
+	BLE	L00255		if true
+	CLRB
+	BRA	L00256		false
+L00255	EQU	*
+	LDB	#1
+L00256	EQU	*
 	STB	-12,U		variable upInvis
-* Line main.c:483: init of variable downInvis
+* Line main.c:498: init of variable downInvis
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -3201,14 +3217,14 @@ L00254	EQU	*
 	PSHS	B,A		operands of superior or equal are not both byte-sized
 	LDD	_playerposition+2	member y of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
 	CMPD	,S++
-	BGE	L00255		if true
+	BGE	L00257		if true
 	CLRB
-	BRA	L00256		false
-L00255	EQU	*
+	BRA	L00258		false
+L00257	EQU	*
 	LDB	#1
-L00256	EQU	*
+L00258	EQU	*
 	STB	-11,U		variable downInvis
-* Line main.c:485: init of variable leftInvis
+* Line main.c:500: init of variable leftInvis
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -3217,38 +3233,38 @@ L00256	EQU	*
 	PSHS	B,A		operands of superior or equal are not both byte-sized
 	LDD	_playerposition+0	member x of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
 	CMPD	,S++
-	BGE	L00257		if true
-	CLRB
-	BRA	L00258		false
-L00257	EQU	*
-	LDB	#1
-L00258	EQU	*
-	STB	-10,U		variable leftInvis
-* Line main.c:486: init of variable rightInvis
-* optim: optimizeStackOperations4
-* optim: optimizeStackOperations4
-	LDD	_playerposition+0	member x of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
-	CMPD	4,U		optim: optimizeStackOperations4
-	BLE	L00259		if true
+	BGE	L00259		if true
 	CLRB
 	BRA	L00260		false
 L00259	EQU	*
 	LDB	#1
 L00260	EQU	*
-	STB	-9,U		variable rightInvis
-* Line main.c:488: init of variable frontInvis
+	STB	-10,U		variable leftInvis
+* Line main.c:501: init of variable rightInvis
 * optim: optimizeStackOperations4
 * optim: optimizeStackOperations4
-	LDD	_playerposition+4	member z of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
-	CMPD	8,U		optim: optimizeStackOperations4
+	LDD	_playerposition+0	member x of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
+	CMPD	4,U		optim: optimizeStackOperations4
 	BLE	L00261		if true
 	CLRB
 	BRA	L00262		false
 L00261	EQU	*
 	LDB	#1
 L00262	EQU	*
+	STB	-9,U		variable rightInvis
+* Line main.c:503: init of variable frontInvis
+* optim: optimizeStackOperations4
+* optim: optimizeStackOperations4
+	LDD	_playerposition+4	member z of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
+	CMPD	8,U		optim: optimizeStackOperations4
+	BLE	L00263		if true
+	CLRB
+	BRA	L00264		false
+L00263	EQU	*
+	LDB	#1
+L00264	EQU	*
 	STB	-8,U		variable frontInvis
-* Line main.c:489: init of variable backInvis
+* Line main.c:504: init of variable backInvis
 * optim: stripOpToDeadReg
 * optim: stripOpToDeadReg
 * PSHS B,A optim: optimizeStackOperations1
@@ -3257,137 +3273,137 @@ L00262	EQU	*
 	PSHS	B,A		operands of superior or equal are not both byte-sized
 	LDD	_playerposition+4	member z of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
 	CMPD	,S++
-	BGE	L00263		if true
+	BGE	L00265		if true
 	CLRB
-	BRA	L00264		false
-L00263	EQU	*
+	BRA	L00266		false
+L00265	EQU	*
 	LDB	#1
-L00264	EQU	*
-	STB	-7,U		variable backInvis
-* Line main.c:492: init of variable up
-	LDB	-18,U		variable `upBlock', declared at main.c:472
-* optim: loadCmpZeroBeqOrBne
-	BNE	L00265		|| yields true
-	LDB	-12,U		variable `upInvis', declared at main.c:482
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00266
-L00265	EQU	*		|| at main.c:492 yields true, B != 0
 L00266	EQU	*
-	STB	-6,U		variable up
-* Line main.c:493: init of variable down
-	LDB	-17,U		variable `downBlock', declared at main.c:473
+	STB	-7,U		variable backInvis
+* Line main.c:507: init of variable up
+	LDB	-18,U		variable `upBlock', declared at main.c:487
 * optim: loadCmpZeroBeqOrBne
 	BNE	L00267		|| yields true
-	LDB	-11,U		variable `downInvis', declared at main.c:483
+	LDB	-12,U		variable `upInvis', declared at main.c:497
 * optim: loadCmpZeroBeqOrBne
 	BEQ	L00268
-L00267	EQU	*		|| at main.c:493 yields true, B != 0
+L00267	EQU	*		|| at main.c:507 yields true, B != 0
 L00268	EQU	*
-	STB	-5,U		variable down
-* Line main.c:495: init of variable left
-	LDB	-16,U		variable `leftBlock', declared at main.c:475
+	STB	-6,U		variable up
+* Line main.c:508: init of variable down
+	LDB	-17,U		variable `downBlock', declared at main.c:488
 * optim: loadCmpZeroBeqOrBne
 	BNE	L00269		|| yields true
-	LDB	-10,U		variable `leftInvis', declared at main.c:485
+	LDB	-11,U		variable `downInvis', declared at main.c:498
 * optim: loadCmpZeroBeqOrBne
 	BEQ	L00270
-L00269	EQU	*		|| at main.c:495 yields true, B != 0
+L00269	EQU	*		|| at main.c:508 yields true, B != 0
 L00270	EQU	*
-	STB	-4,U		variable left
-* Line main.c:496: init of variable right
-	LDB	-15,U		variable `rightBlock', declared at main.c:476
+	STB	-5,U		variable down
+* Line main.c:510: init of variable left
+	LDB	-16,U		variable `leftBlock', declared at main.c:490
 * optim: loadCmpZeroBeqOrBne
 	BNE	L00271		|| yields true
-	LDB	-9,U		variable `rightInvis', declared at main.c:486
+	LDB	-10,U		variable `leftInvis', declared at main.c:500
 * optim: loadCmpZeroBeqOrBne
 	BEQ	L00272
-L00271	EQU	*		|| at main.c:496 yields true, B != 0
+L00271	EQU	*		|| at main.c:510 yields true, B != 0
 L00272	EQU	*
-	STB	-3,U		variable right
-* Line main.c:498: init of variable front
-	LDB	-14,U		variable `frontBlock', declared at main.c:478
+	STB	-4,U		variable left
+* Line main.c:511: init of variable right
+	LDB	-15,U		variable `rightBlock', declared at main.c:491
 * optim: loadCmpZeroBeqOrBne
 	BNE	L00273		|| yields true
-	LDB	-8,U		variable `frontInvis', declared at main.c:488
+	LDB	-9,U		variable `rightInvis', declared at main.c:501
 * optim: loadCmpZeroBeqOrBne
 	BEQ	L00274
-L00273	EQU	*		|| at main.c:498 yields true, B != 0
+L00273	EQU	*		|| at main.c:511 yields true, B != 0
 L00274	EQU	*
-	STB	-2,U		variable front
-* Line main.c:499: init of variable back
-	LDB	-13,U		variable `backBlock', declared at main.c:479
+	STB	-3,U		variable right
+* Line main.c:513: init of variable front
+	LDB	-14,U		variable `frontBlock', declared at main.c:493
 * optim: loadCmpZeroBeqOrBne
 	BNE	L00275		|| yields true
-	LDB	-7,U		variable `backInvis', declared at main.c:489
+	LDB	-8,U		variable `frontInvis', declared at main.c:503
 * optim: loadCmpZeroBeqOrBne
 	BEQ	L00276
-L00275	EQU	*		|| at main.c:499 yields true, B != 0
+L00275	EQU	*		|| at main.c:513 yields true, B != 0
 L00276	EQU	*
+	STB	-2,U		variable front
+* Line main.c:514: init of variable back
+	LDB	-13,U		variable `backBlock', declared at main.c:494
+* optim: loadCmpZeroBeqOrBne
+	BNE	L00277		|| yields true
+	LDB	-7,U		variable `backInvis', declared at main.c:504
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00278
+L00277	EQU	*		|| at main.c:514 yields true, B != 0
+L00278	EQU	*
 	STB	-1,U		variable back
-* Line main.c:502: if
+* Line main.c:517: if
 * optim: storeLoad
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00278		 (optim: condBranchOverUncondBranch)
+	BEQ	L00280		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00280 removed
-	LDB	-5,U		variable `down', declared at main.c:493
+* Useless label L00282 removed
+	LDB	-5,U		variable `down', declared at main.c:508
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00278		 (optim: condBranchOverUncondBranch)
+	BEQ	L00280		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00281 removed
+	LDB	-4,U		variable `left', declared at main.c:510
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00280		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00279 removed
-	LDB	-4,U		variable `left', declared at main.c:495
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00278		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00277 removed
-* Line main.c:502
-* Line main.c:503: assignment: =
+* Line main.c:517
+* Line main.c:518: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: optimizeLdx
 * optim: stripUselessPushPull
 	STD	[12,U]		optim: optimizeLdx
-* Line main.c:504: assignment: =
+* Line main.c:519: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	2,X		optim: optimizeLeax
-* Line main.c:505: assignment: =
+* Line main.c:520: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	4,X		optim: optimizeLeax
-L00278	EQU	*		else clause of if() started at main.c:502
-* Useless label L00281 removed
-* Line main.c:508: if
-	LDB	-1,U		variable `back', declared at main.c:499
+L00280	EQU	*		else clause of if() started at main.c:517
+* Useless label L00283 removed
+* Line main.c:523: if
+	LDB	-1,U		variable `back', declared at main.c:514
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00283		 (optim: condBranchOverUncondBranch)
+	BEQ	L00285		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00285 removed
-	LDB	-5,U		variable `down', declared at main.c:493
+* Useless label L00287 removed
+	LDB	-5,U		variable `down', declared at main.c:508
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00283		 (optim: condBranchOverUncondBranch)
+	BEQ	L00285		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00286 removed
+	LDB	-3,U		variable `right', declared at main.c:511
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00285		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00284 removed
-	LDB	-3,U		variable `right', declared at main.c:496
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00283		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00282 removed
-* Line main.c:508
-* Line main.c:509: assignment: =
+* Line main.c:523
+* Line main.c:524: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	6,X		optim: optimizeLeax
-* Line main.c:510: assignment: =
+* Line main.c:525: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3395,7 +3411,7 @@ L00278	EQU	*		else clause of if() started at main.c:502
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	8,X		optim: optimizeLeax
-* Line main.c:511: assignment: =
+* Line main.c:526: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3403,33 +3419,33 @@ L00278	EQU	*		else clause of if() started at main.c:502
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	10,X		optim: optimizeLeax
-L00283	EQU	*		else clause of if() started at main.c:508
-* Useless label L00286 removed
-* Line main.c:514: if
-	LDB	-1,U		variable `back', declared at main.c:499
+L00285	EQU	*		else clause of if() started at main.c:523
+* Useless label L00288 removed
+* Line main.c:529: if
+	LDB	-1,U		variable `back', declared at main.c:514
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00288		 (optim: condBranchOverUncondBranch)
+	BEQ	L00290		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00290 removed
-	LDB	-6,U		variable `up', declared at main.c:492
+* Useless label L00292 removed
+	LDB	-6,U		variable `up', declared at main.c:507
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00288		 (optim: condBranchOverUncondBranch)
+	BEQ	L00290		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00291 removed
+	LDB	-3,U		variable `right', declared at main.c:511
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00290		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00289 removed
-	LDB	-3,U		variable `right', declared at main.c:496
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00288		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00287 removed
-* Line main.c:514
-* Line main.c:515: assignment: =
+* Line main.c:529
+* Line main.c:530: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	12,X		optim: optimizeLeax
-* Line main.c:516: assignment: =
+* Line main.c:531: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3437,7 +3453,7 @@ L00283	EQU	*		else clause of if() started at main.c:508
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	14,X		optim: optimizeLeax
-* Line main.c:517: assignment: =
+* Line main.c:532: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3445,33 +3461,33 @@ L00283	EQU	*		else clause of if() started at main.c:508
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	16,X		optim: optimizeLeax
-L00288	EQU	*		else clause of if() started at main.c:514
-* Useless label L00291 removed
-* Line main.c:520: if
-	LDB	-1,U		variable `back', declared at main.c:499
+L00290	EQU	*		else clause of if() started at main.c:529
+* Useless label L00293 removed
+* Line main.c:535: if
+	LDB	-1,U		variable `back', declared at main.c:514
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00293		 (optim: condBranchOverUncondBranch)
+	BEQ	L00295		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00295 removed
-	LDB	-6,U		variable `up', declared at main.c:492
+* Useless label L00297 removed
+	LDB	-6,U		variable `up', declared at main.c:507
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00293		 (optim: condBranchOverUncondBranch)
+	BEQ	L00295		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00296 removed
+	LDB	-4,U		variable `left', declared at main.c:510
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00295		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00294 removed
-	LDB	-4,U		variable `left', declared at main.c:495
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00293		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00292 removed
-* Line main.c:520
-* Line main.c:521: assignment: =
+* Line main.c:535
+* Line main.c:536: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	18,X		optim: optimizeLeax
-* Line main.c:522: assignment: =
+* Line main.c:537: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3479,7 +3495,7 @@ L00288	EQU	*		else clause of if() started at main.c:514
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	20,X		optim: optimizeLeax
-* Line main.c:523: assignment: =
+* Line main.c:538: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3487,33 +3503,33 @@ L00288	EQU	*		else clause of if() started at main.c:514
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	22,X		optim: optimizeLeax
-L00293	EQU	*		else clause of if() started at main.c:520
-* Useless label L00296 removed
-* Line main.c:526: if
-	LDB	-2,U		variable `front', declared at main.c:498
+L00295	EQU	*		else clause of if() started at main.c:535
+* Useless label L00298 removed
+* Line main.c:541: if
+	LDB	-2,U		variable `front', declared at main.c:513
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00298		 (optim: condBranchOverUncondBranch)
+	BEQ	L00300		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00300 removed
-	LDB	-5,U		variable `down', declared at main.c:493
+* Useless label L00302 removed
+	LDB	-5,U		variable `down', declared at main.c:508
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00298		 (optim: condBranchOverUncondBranch)
+	BEQ	L00300		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00301 removed
+	LDB	-4,U		variable `left', declared at main.c:510
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00300		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00299 removed
-	LDB	-4,U		variable `left', declared at main.c:495
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00298		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00297 removed
-* Line main.c:526
-* Line main.c:527: assignment: =
+* Line main.c:541
+* Line main.c:542: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	24,X		optim: optimizeLeax
-* Line main.c:528: assignment: =
+* Line main.c:543: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3521,7 +3537,7 @@ L00293	EQU	*		else clause of if() started at main.c:520
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	26,X		optim: optimizeLeax
-* Line main.c:529: assignment: =
+* Line main.c:544: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3529,33 +3545,33 @@ L00293	EQU	*		else clause of if() started at main.c:520
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	28,X		optim: optimizeLeax
-L00298	EQU	*		else clause of if() started at main.c:526
-* Useless label L00301 removed
-* Line main.c:532: if
-	LDB	-2,U		variable `front', declared at main.c:498
+L00300	EQU	*		else clause of if() started at main.c:541
+* Useless label L00303 removed
+* Line main.c:547: if
+	LDB	-2,U		variable `front', declared at main.c:513
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00303		 (optim: condBranchOverUncondBranch)
+	BEQ	L00305		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00305 removed
-	LDB	-5,U		variable `down', declared at main.c:493
+* Useless label L00307 removed
+	LDB	-5,U		variable `down', declared at main.c:508
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00303		 (optim: condBranchOverUncondBranch)
+	BEQ	L00305		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00306 removed
+	LDB	-3,U		variable `right', declared at main.c:511
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00305		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00304 removed
-	LDB	-3,U		variable `right', declared at main.c:496
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00303		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00302 removed
-* Line main.c:532
-* Line main.c:533: assignment: =
+* Line main.c:547
+* Line main.c:548: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	30,X		optim: optimizeLeax
-* Line main.c:534: assignment: =
+* Line main.c:549: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3563,7 +3579,7 @@ L00298	EQU	*		else clause of if() started at main.c:526
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	32,X		optim: optimizeLeax
-* Line main.c:535: assignment: =
+* Line main.c:550: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3571,33 +3587,33 @@ L00298	EQU	*		else clause of if() started at main.c:526
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	34,X		optim: optimizeLeax
-L00303	EQU	*		else clause of if() started at main.c:532
-* Useless label L00306 removed
-* Line main.c:538: if
-	LDB	-2,U		variable `front', declared at main.c:498
+L00305	EQU	*		else clause of if() started at main.c:547
+* Useless label L00308 removed
+* Line main.c:553: if
+	LDB	-2,U		variable `front', declared at main.c:513
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00308		 (optim: condBranchOverUncondBranch)
+	BEQ	L00310		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00310 removed
-	LDB	-6,U		variable `up', declared at main.c:492
+* Useless label L00312 removed
+	LDB	-6,U		variable `up', declared at main.c:507
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00308		 (optim: condBranchOverUncondBranch)
+	BEQ	L00310		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00311 removed
+	LDB	-3,U		variable `right', declared at main.c:511
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00310		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00309 removed
-	LDB	-3,U		variable `right', declared at main.c:496
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00308		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00307 removed
-* Line main.c:538
-* Line main.c:539: assignment: =
+* Line main.c:553
+* Line main.c:554: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	36,X		optim: optimizeLeax
-* Line main.c:540: assignment: =
+* Line main.c:555: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3605,7 +3621,7 @@ L00303	EQU	*		else clause of if() started at main.c:532
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	38,X		optim: optimizeLeax
-* Line main.c:541: assignment: =
+* Line main.c:556: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3613,33 +3629,33 @@ L00303	EQU	*		else clause of if() started at main.c:532
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	40,X		optim: optimizeLeax
-L00308	EQU	*		else clause of if() started at main.c:538
-* Useless label L00311 removed
-* Line main.c:544: if
-	LDB	-2,U		variable `front', declared at main.c:498
+L00310	EQU	*		else clause of if() started at main.c:553
+* Useless label L00313 removed
+* Line main.c:559: if
+	LDB	-2,U		variable `front', declared at main.c:513
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00313		 (optim: condBranchOverUncondBranch)
+	BEQ	L00315		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00315 removed
-	LDB	-6,U		variable `up', declared at main.c:492
+* Useless label L00317 removed
+	LDB	-6,U		variable `up', declared at main.c:507
 * optim: loadCmpZeroBeqOrBne
-	BEQ	L00313		 (optim: condBranchOverUncondBranch)
+	BEQ	L00315		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00316 removed
+	LDB	-4,U		variable `left', declared at main.c:510
+* optim: loadCmpZeroBeqOrBne
+	BEQ	L00315		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00314 removed
-	LDB	-4,U		variable `left', declared at main.c:495
-* optim: loadCmpZeroBeqOrBne
-	BEQ	L00313		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00312 removed
-* Line main.c:544
-* Line main.c:545: assignment: =
+* Line main.c:559
+* Line main.c:560: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 	LDX	12,U		get pointer value from variable out
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	42,X		optim: optimizeLeax
-* Line main.c:546: assignment: =
+* Line main.c:561: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3647,7 +3663,7 @@ L00308	EQU	*		else clause of if() started at main.c:538
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	44,X		optim: optimizeLeax
-* Line main.c:547: assignment: =
+* Line main.c:562: assignment: =
 	LDD	#$FF80		constant expression: 65408 decimal, signed
 * optim: stripUselessPushPull
 * optim: removeRepeatedLDX
@@ -3655,9 +3671,9 @@ L00308	EQU	*		else clause of if() started at main.c:538
 * optim: coalesceConsecutiveLeax
 * optim: stripUselessPushPull
 	STD	46,X		optim: optimizeLeax
-L00313	EQU	*		else clause of if() started at main.c:544
-* Useless label L00316 removed
-* Line main.c:550: assignment: =
+L00315	EQU	*		else clause of if() started at main.c:559
+* Useless label L00318 removed
+* Line main.c:565: assignment: =
 * CLRB  optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3665,7 +3681,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#0		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:550: assignment: =
+* Line main.c:565: assignment: =
 * LDB #$01 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3674,7 +3690,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#1		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:551: assignment: =
+* Line main.c:566: assignment: =
 * LDB #$01 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3683,7 +3699,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#1		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:551: assignment: =
+* Line main.c:566: assignment: =
 * LDB #$02 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3693,7 +3709,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#2		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:552: assignment: =
+* Line main.c:567: assignment: =
 * LDB #$02 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3702,7 +3718,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#2		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:552: assignment: =
+* Line main.c:567: assignment: =
 * LDB #$03 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3712,7 +3728,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#3		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:553: assignment: =
+* Line main.c:568: assignment: =
 * LDB #$03 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3721,7 +3737,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#3		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:553: assignment: =
+* Line main.c:568: assignment: =
 * CLRB  optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3731,7 +3747,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#0		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:554: assignment: =
+* Line main.c:569: assignment: =
 * LDB #$04 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3740,7 +3756,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#4		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:554: assignment: =
+* Line main.c:569: assignment: =
 * LDB #$05 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3750,7 +3766,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#5		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:555: assignment: =
+* Line main.c:570: assignment: =
 * LDB #$05 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3759,7 +3775,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#5		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:555: assignment: =
+* Line main.c:570: assignment: =
 * LDB #$06 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3769,7 +3785,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#6		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:556: assignment: =
+* Line main.c:571: assignment: =
 * LDB #$06 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3778,7 +3794,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#6		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:556: assignment: =
+* Line main.c:571: assignment: =
 * LDB #$07 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3788,7 +3804,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#7		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:557: assignment: =
+* Line main.c:572: assignment: =
 * LDB #$07 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3797,7 +3813,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#7		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:557: assignment: =
+* Line main.c:572: assignment: =
 * LDB #$04 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3807,7 +3823,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#4		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:558: assignment: =
+* Line main.c:573: assignment: =
 * CLRB  optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3816,7 +3832,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#0		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:558: assignment: =
+* Line main.c:573: assignment: =
 * LDB #$04 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3826,7 +3842,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#4		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:559: assignment: =
+* Line main.c:574: assignment: =
 * LDB #$01 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3835,7 +3851,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#1		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:559: assignment: =
+* Line main.c:574: assignment: =
 * LDB #$05 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3845,7 +3861,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#5		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:560: assignment: =
+* Line main.c:575: assignment: =
 * LDB #$02 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3854,7 +3870,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#2		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:560: assignment: =
+* Line main.c:575: assignment: =
 * LDB #$06 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3864,7 +3880,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#6		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:561: assignment: =
+* Line main.c:576: assignment: =
 * LDB #$03 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3873,7 +3889,7 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: stripConsecOppositeTFRs
 	LDB	#3		optim: optimizeStackOperations1
 	STB	,X
-* Line main.c:561: assignment: =
+* Line main.c:576: assignment: =
 * LDB #$07 optim: optimizeStackOperations1
 * PSHS B optim: optimizeStackOperations1
 	LDX	10,U		get pointer value from variable edges
@@ -3883,261 +3899,261 @@ L00313	EQU	*		else clause of if() started at main.c:544
 * optim: optimizeLeax
 	LDB	#7		optim: optimizeStackOperations1
 	STB	1,X		optim: optimizeLeax
-* Line main.c:563: if
-	LDB	-13,U		variable `backBlock', declared at main.c:479
+* Line main.c:578: if
+	LDB	-13,U		variable `backBlock', declared at main.c:494
 * optim: loadCmpZeroBeqOrBne
-	LBEQ	L00318		 (optim: condBranchOverUncondBranch)
+	LBEQ	L00320		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00317 removed
-* Line main.c:563
-* Line main.c:564: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:564: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:565: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	2,X		add index (1) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:565: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	2,X		add index (1) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:566: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	4,X		add index (2) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:566: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	4,X		add index (2) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:567: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	6,X		add index (3) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:567: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	6,X		add index (3) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-L00318	EQU	*		else clause of if() started at main.c:563
 * Useless label L00319 removed
-* Line main.c:570: if
-	LDB	-14,U		variable `frontBlock', declared at main.c:478
+* Line main.c:578
+* Line main.c:579: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:579: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:580: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	2,X		add index (1) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:580: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	2,X		add index (1) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:581: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	4,X		add index (2) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:581: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	4,X		add index (2) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:582: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	6,X		add index (3) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:582: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	6,X		add index (3) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+L00320	EQU	*		else clause of if() started at main.c:578
+* Useless label L00321 removed
+* Line main.c:585: if
+	LDB	-14,U		variable `frontBlock', declared at main.c:493
 * optim: loadCmpZeroBeqOrBne
-	LBEQ	L00321		 (optim: condBranchOverUncondBranch)
+	LBEQ	L00323		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00320 removed
-* Line main.c:570
-* Line main.c:571: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	8,X		add index (4) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:571: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	8,X		add index (4) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:572: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	10,X		add index (5) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:572: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	10,X		add index (5) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:573: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	12,X		add index (6) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:573: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	12,X		add index (6) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:574: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	14,X		add index (7) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:574: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	14,X		add index (7) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-L00321	EQU	*		else clause of if() started at main.c:570
 * Useless label L00322 removed
-* Line main.c:577: if
-	LDB	-17,U		variable `downBlock', declared at main.c:473
+* Line main.c:585
+* Line main.c:586: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	8,X		add index (4) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:586: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	8,X		add index (4) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:587: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	10,X		add index (5) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:587: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	10,X		add index (5) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:588: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	12,X		add index (6) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:588: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	12,X		add index (6) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:589: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	14,X		add index (7) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:589: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	14,X		add index (7) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+L00323	EQU	*		else clause of if() started at main.c:585
+* Useless label L00324 removed
+* Line main.c:592: if
+	LDB	-17,U		variable `downBlock', declared at main.c:488
 * optim: loadCmpZeroBeqOrBne
-	LBEQ	L00324		 (optim: condBranchOverUncondBranch)
+	LBEQ	L00326		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00323 removed
-* Line main.c:577
-* Line main.c:578: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:578: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:579: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	8,X		add index (4) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:579: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	8,X		add index (4) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:580: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	16,X		add index (8) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:580: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	16,X		add index (8) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-* Line main.c:581: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	18,X		add index (9) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-	LDB	#255		optim: optimizeStackOperations1
-	STB	,X
-* Line main.c:581: assignment: =
-* LDD #$FFFF optim: optimizeStackOperations1
-* PSHS B optim: optimizeStackOperations1
-	LDX	10,U		get pointer value from variable edges
-	LEAX	18,X		add index (9) multiplied by pointed object size (2)
-	TFR	X,D		array address as r-value
-* optim: stripConsecOppositeTFRs
-* optim: optimizeLeax
-	LDB	#255		optim: optimizeStackOperations1
-	STB	1,X		optim: optimizeLeax
-L00324	EQU	*		else clause of if() started at main.c:577
 * Useless label L00325 removed
+* Line main.c:592
+* Line main.c:593: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:593: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:594: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	8,X		add index (4) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:594: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	8,X		add index (4) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:595: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	16,X		add index (8) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:595: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	16,X		add index (8) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+* Line main.c:596: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	18,X		add index (9) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+	LDB	#255		optim: optimizeStackOperations1
+	STB	,X
+* Line main.c:596: assignment: =
+* LDD #$FFFF optim: optimizeStackOperations1
+* PSHS B optim: optimizeStackOperations1
+	LDX	10,U		get pointer value from variable edges
+	LEAX	18,X		add index (9) multiplied by pointed object size (2)
+	TFR	X,D		array address as r-value
+* optim: stripConsecOppositeTFRs
+* optim: optimizeLeax
+	LDB	#255		optim: optimizeStackOperations1
+	STB	1,X		optim: optimizeLeax
+L00326	EQU	*		else clause of if() started at main.c:592
+* Useless label L00327 removed
 * Useless label L00051 removed
 	LEAS	,U
 	PULS	U,PC
-* END FUNCTION createcubeat(): defined at main.c:432
+* END FUNCTION createcubeat(): defined at main.c:447
 funcend_createcubeat	EQU *
 funcsize_createcubeat	EQU	funcend_createcubeat-_createcubeat
 _prepare_vertices	EXPORT
@@ -4145,7 +4161,7 @@ _prepare_vertices	EXPORT
 
 *******************************************************************************
 
-* FUNCTION prepare_vertices(): defined at main.c:585
+* FUNCTION prepare_vertices(): defined at main.c:600
 _prepare_vertices	EQU	*
 * Prototype: void prepare_vertices(...)
 * Calling convention: 0 (CMOC Default)
@@ -4153,11 +4169,11 @@ _prepare_vertices	EQU	*
 	LEAU	,S
 * optim: removeUnneededLEAS
 * Local non-static variable(s):
-*    -12,U:   12 bytes: pp: struct AnonStruct_main.c:21[]: line 587
+*    -12,U:   12 bytes: pp: struct AnonStruct_main.c:21[]: line 602
 * Useless label L00052 removed
 	LEAS	,U
 	PULS	U,PC
-* END FUNCTION prepare_vertices(): defined at main.c:585
+* END FUNCTION prepare_vertices(): defined at main.c:600
 funcend_prepare_vertices	EQU *
 funcsize_prepare_vertices	EQU	funcend_prepare_vertices-_prepare_vertices
 _cast_ray_down_from_player	EXPORT
@@ -4165,19 +4181,19 @@ _cast_ray_down_from_player	EXPORT
 
 *******************************************************************************
 
-* FUNCTION cast_ray_down_from_player(): defined at main.c:609
+* FUNCTION cast_ray_down_from_player(): defined at main.c:624
 _cast_ray_down_from_player	EQU	*
 * Prototype: void cast_ray_down_from_player(char, struct AnonStruct_main.c:26 *)
 * Calling convention: 0 (CMOC Default)
 	PSHS	U
 	LEAU	,S
 * Formal parameter(s):
-*      5,U:    1 byte : dist: char: line 609
-*      6,U:    2 bytes: out: struct AnonStruct_main.c:26 *: line 609
+*      5,U:    1 byte : dist: char: line 624
+*      6,U:    2 bytes: out: struct AnonStruct_main.c:26 *: line 624
 * Useless label L00053 removed
 	LEAS	,U
 	PULS	U,PC
-* END FUNCTION cast_ray_down_from_player(): defined at main.c:609
+* END FUNCTION cast_ray_down_from_player(): defined at main.c:624
 funcend_cast_ray_down_from_player	EQU *
 funcsize_cast_ray_down_from_player	EQU	funcend_cast_ray_down_from_player-_cast_ray_down_from_player
 _main	EXPORT
@@ -4185,7 +4201,7 @@ _main	EXPORT
 
 *******************************************************************************
 
-* FUNCTION main(): defined at main.c:625
+* FUNCTION main(): defined at main.c:640
 _main	EQU	*
 * Prototype: int main(void)
 * Calling convention: 0 (CMOC Default)
@@ -4193,81 +4209,81 @@ _main	EQU	*
 	LEAU	,S
 	LEAS	-119,S
 * Local non-static variable(s):
-*   -119,U:    1 byte : move_angle: unsigned char: line 716
-*   -119,U:    1 byte : move_angle: unsigned char: line 722
-*   -119,U:    1 byte : move_angle: unsigned char: line 727
-*   -119,U:    1 byte : move_angle: unsigned char: line 733
-*   -118,U:   32 bytes: stringy: char[]: line 644
-*    -86,U:   24 bytes: edges: char[][]: line 678
-*    -62,U:   48 bytes: out: struct AnonStruct_main.c:26[]: line 679
-*    -14,U:    6 bytes: p1: struct AnonStruct_main.c:26: line 681
-*     -8,U:    6 bytes: p2: struct AnonStruct_main.c:26: line 684
-*     -2,U:    1 byte : buttons: unsigned char: line 688
-*     -1,U:    1 byte : joy: unsigned char: line 689
-* Line main.c:626: assignment: =
+*   -119,U:    1 byte : move_angle: unsigned char: line 731
+*   -119,U:    1 byte : move_angle: unsigned char: line 737
+*   -119,U:    1 byte : move_angle: unsigned char: line 742
+*   -119,U:    1 byte : move_angle: unsigned char: line 748
+*   -118,U:   32 bytes: stringy: char[]: line 659
+*    -86,U:   24 bytes: edges: char[][]: line 693
+*    -62,U:   48 bytes: out: struct AnonStruct_main.c:26[]: line 694
+*    -14,U:    6 bytes: p1: struct AnonStruct_main.c:26: line 696
+*     -8,U:    6 bytes: p2: struct AnonStruct_main.c:26: line 699
+*     -2,U:    1 byte : buttons: unsigned char: line 703
+*     -1,U:    1 byte : joy: unsigned char: line 704
+* Line main.c:641: assignment: =
 	CLRA
 	LDB	#$14		decimal 20 signed
 * optim: stripUselessPushPull
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	_playerposition+0	optim: optimizeLeax (optim: removePCRIfRelocatabilityNotSupported)
-* Line main.c:627: assignment: =
+* Line main.c:642: assignment: =
 * optim: stripExtraClrA_B
 	CLRB
 * optim: stripUselessPushPull
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	_playerposition+2	optim: optimizeLeax (optim: removePCRIfRelocatabilityNotSupported)
-* Line main.c:628: assignment: =
+* Line main.c:643: assignment: =
 * optim: stripExtraClrA_B
 	LDB	#$0B		decimal 11 signed
 * optim: stripUselessPushPull
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	_playerposition+4	optim: optimizeLeax (optim: removePCRIfRelocatabilityNotSupported)
-* Line main.c:630: assignment: =
+* Line main.c:645: assignment: =
 * optim: removeClr
 	CLRB
 * optim: stripUselessPushPull
 * optim: optimizeLeax
 * optim: stripUselessPushPull
 	STD	_playerrotation+0	optim: optimizeLeax (optim: removePCRIfRelocatabilityNotSupported)
-* Line main.c:631: assignment: =
+* Line main.c:646: assignment: =
 * optim: removeClr
 * optim: removeClr
 * optim: stripUselessPushPull
 	LDX	#_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
 * optim: stripUselessPushPull
 	STD	,X
-* Line main.c:632: function call: UpdateDirections()
+* Line main.c:647: function call: UpdateDirections()
 	JSR	_UpdateDirections
-* Line main.c:634: function call: terminal_print()
+* Line main.c:649: function call: terminal_print()
 	LDX	#S00055		"TERMINAL INITIALIZED 0123456789" (optim: removePCRIfRelocatabilityNotSupported)
 	TFR	X,D
 * Emitted no code to cast `const char[]' to `char *'
 	PSHS	B,A		C function argument 1 of terminal_print(): char *
 	JSR	_terminal_print
 	LEAS	2,S
-* Line main.c:636: while
-	LBRA	L00327		jump to while condition
-L00326	EQU	*		while body
-* Line main.c:640: function call: wait_retrace()
+* Line main.c:651: while
+	LBRA	L00329		jump to while condition
+L00328	EQU	*		while body
+* Line main.c:655: function call: wait_retrace()
 	JSR	_wait_retrace
-* Line main.c:641: function call: intensity()
+* Line main.c:656: function call: intensity()
 	CLRA
 	LDB	#$5F		decimal 95 signed
 	PSHS	B,A		C function argument 1 of intensity(): int
 	JSR	_intensity
 	LEAS	2,S
-* Line main.c:643: function call: set_text_size()
+* Line main.c:658: function call: set_text_size()
 	LDX	#$28		decimal 40 signed (optim: optimizeConsecutiveFunctionArguments)
 * optim: optimizeConsecutiveFunctionArguments
 	LDD	#$FFFA		constant expression: 65530 decimal, signed
 	PSHS	X,B,A		C function argument 1 of set_text_size(): int (optim: optimizeConsecutiveFunctionArguments)
 	JSR	_set_text_size
 	LEAS	4,S
-* The if() condition at main.c:650 is always true
-* Line main.c:647: function call: build_position_string()
+* The if() condition at main.c:665 is always true
+* Line main.c:662: function call: build_position_string()
 	LDX	_playerposition+4	member z of AnonStruct_main.c:26, via variable playerposition (optim: optimizeConsecutiveFunctionArguments) (optim: removePCRIfRelocatabilityNotSupported)
 * optim: optimizeConsecutiveFunctionArguments
 	LDD	_playerposition+2	member y of AnonStruct_main.c:26, via variable playerposition (optim: removePCRIfRelocatabilityNotSupported)
@@ -4278,7 +4294,7 @@ L00326	EQU	*		while body
 	PSHS	X		C function argument 1 of build_position_string(): char[]
 	JSR	_build_position_string
 	LEAS	8,S
-* Line main.c:648: function call: print_str_c()
+* Line main.c:663: function call: print_str_c()
 	LEAX	-118,U		address of array stringy
 	PSHS	X		C function argument 3 of print_str_c(): char[]
 	LDX	#$FF88		constant expression: 65416 decimal, signed (optim: optimizeConsecutiveFunctionArguments)
@@ -4288,8 +4304,8 @@ L00326	EQU	*		while body
 	PSHS	X,B,A		C function argument 1 of print_str_c(): int (optim: optimizeConsecutiveFunctionArguments)
 	JSR	_print_str_c
 	LEAS	6,S
-* The if() condition at main.c:678 is always true
-* Line main.c:651: function call: build_rotation_string()
+* The if() condition at main.c:693 is always true
+* Line main.c:666: function call: build_rotation_string()
 	LDX	_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: optimizeConsecutiveFunctionArguments) (optim: removePCRIfRelocatabilityNotSupported)
 * optim: optimizeConsecutiveFunctionArguments
 	LDD	_playerrotation+0	member x of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
@@ -4298,7 +4314,7 @@ L00326	EQU	*		while body
 	PSHS	X		C function argument 1 of build_rotation_string(): char[]
 	JSR	_build_rotation_string
 	LEAS	6,S
-* Line main.c:652: function call: print_str_c()
+* Line main.c:667: function call: print_str_c()
 	LEAX	-118,U		address of array stringy
 	PSHS	X		C function argument 3 of print_str_c(): char[]
 	LDX	#$FF88		constant expression: 65416 decimal, signed (optim: optimizeConsecutiveFunctionArguments)
@@ -4308,7 +4324,7 @@ L00326	EQU	*		while body
 	PSHS	X,B,A		C function argument 1 of print_str_c(): int (optim: optimizeConsecutiveFunctionArguments)
 	JSR	_print_str_c
 	LEAS	6,S
-* Line main.c:681: init of variable p1
+* Line main.c:696: init of variable p1
 	CLRA
 	LDB	#$0A		decimal 10 signed
 	STD	-14,U		offset in variable p1
@@ -4317,25 +4333,25 @@ L00326	EQU	*		while body
 	CLRA
 	LDB	#$1E		decimal 30 signed
 	STD	-10,U		offset in variable p1
-* Line main.c:682: function call: createcubeat()
+* Line main.c:697: function call: createcubeat()
 	LEAX	-62,U		address of array out
 	PSHS	X		C function argument 3 of createcubeat(): struct AnonStruct_main.c:26[]
 	LEAX	-86,U		address of array edges
 	PSHS	X		C function argument 2 of createcubeat(): char[][]
-	LEAX	-14,U		variable `p1', declared at main.c:681
+	LEAX	-14,U		variable `p1', declared at main.c:696
 	LDB	#6		size of struct AnonStruct_main.c:26
 	LEAS	-6,S		pass struct AnonStruct_main.c:26 by value
 	LBSR	pushSmallStruct	C function argument 1 of createcubeat(): struct AnonStruct_main.c:26
 	JSR	_createcubeat
 	LEAS	10,S
-* Line main.c:683: function call: drawcube()
+* Line main.c:698: function call: drawcube()
 	LEAX	-86,U		address of array edges
 	PSHS	X		C function argument 2 of drawcube(): char[][]
 	LEAX	-62,U		address of array out
 	PSHS	X		C function argument 1 of drawcube(): struct AnonStruct_main.c:26[]
 	JSR	_drawcube
 	LEAS	4,S
-* Line main.c:684: init of variable p2
+* Line main.c:699: init of variable p2
 	CLRA
 	LDB	#$0A		decimal 10 signed
 	STD	-8,U		offset in variable p2
@@ -4344,45 +4360,45 @@ L00326	EQU	*		while body
 	CLRA
 	LDB	#$32		decimal 50 signed
 	STD	-4,U		offset in variable p2
-* Line main.c:685: function call: createcubeat()
+* Line main.c:700: function call: createcubeat()
 	LEAX	-62,U		address of array out
 	PSHS	X		C function argument 3 of createcubeat(): struct AnonStruct_main.c:26[]
 	LEAX	-86,U		address of array edges
 	PSHS	X		C function argument 2 of createcubeat(): char[][]
-	LEAX	-8,U		variable `p2', declared at main.c:684
+	LEAX	-8,U		variable `p2', declared at main.c:699
 	LDB	#6		size of struct AnonStruct_main.c:26
 	LEAS	-6,S		pass struct AnonStruct_main.c:26 by value
 	LBSR	pushSmallStruct	C function argument 1 of createcubeat(): struct AnonStruct_main.c:26
 	JSR	_createcubeat
 	LEAS	10,S
-* Line main.c:686: function call: drawcube()
+* Line main.c:701: function call: drawcube()
 	LEAX	-86,U		address of array edges
 	PSHS	X		C function argument 2 of drawcube(): char[][]
 	LEAX	-62,U		address of array out
 	PSHS	X		C function argument 1 of drawcube(): struct AnonStruct_main.c:26[]
 	JSR	_drawcube
 	LEAS	4,S
-* Line main.c:688: init of variable buttons
-* Line main.c:688: function call: read_buttons()
+* Line main.c:703: init of variable buttons
+* Line main.c:703: function call: read_buttons()
 	JSR	_read_buttons
 	STB	-2,U		variable buttons
-* Line main.c:689: init of variable joy
-* Line main.c:689: function call: read_joystick()
+* Line main.c:704: init of variable joy
+* Line main.c:704: function call: read_joystick()
 	CLRA
 	LDB	#$01		decimal 1 signed
 	PSHS	B,A		C function argument 1 of read_joystick(): int
 	JSR	_read_joystick
 	LEAS	2,S
 	STB	-1,U		variable joy
-* Line main.c:691: if
+* Line main.c:706: if
 * optim: storeLoad
 	ANDB	#$04
 * optim: optimizeAndbTstb
-	BEQ	L00330		 (optim: condBranchOverUncondBranch)
+	BEQ	L00332		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00329 removed
-* Line main.c:691
-* Line main.c:692: assignment: -=
+* Useless label L00331 removed
+* Line main.c:706
+* Line main.c:707: assignment: -=
 * optim: optimizeStackOperations5
 * optim: optimizeStackOperations5
 * optim: optimizeStackOperations5
@@ -4390,19 +4406,19 @@ L00326	EQU	*		while body
 	LDD	,X
 	SUBD	#$05		optim: optimizeStackOperations5
 	STD	,X
-* Line main.c:693: function call: UpdateDirections()
+* Line main.c:708: function call: UpdateDirections()
 	JSR	_UpdateDirections
-L00330	EQU	*		else clause of if() started at main.c:691
-* Useless label L00331 removed
-* Line main.c:697: if
+L00332	EQU	*		else clause of if() started at main.c:706
+* Useless label L00333 removed
+* Line main.c:712: if
 	LDB	-1,U		variable joy
 	ANDB	#$08
 * optim: optimizeAndbTstb
-	BEQ	L00333		 (optim: condBranchOverUncondBranch)
+	BEQ	L00335		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00332 removed
-* Line main.c:697
-* Line main.c:698: assignment: +=
+* Useless label L00334 removed
+* Line main.c:712
+* Line main.c:713: assignment: +=
 * optim: optimizeStackOperations5
 * optim: optimizeStackOperations5
 * optim: optimizeStackOperations5
@@ -4410,49 +4426,49 @@ L00330	EQU	*		else clause of if() started at main.c:691
 	LDD	,X
 	ADDD	#$05		optim: optimizeStackOperations5
 	STD	,X
-* Line main.c:699: function call: UpdateDirections()
+* Line main.c:714: function call: UpdateDirections()
 	JSR	_UpdateDirections
-L00333	EQU	*		else clause of if() started at main.c:697
-* Useless label L00334 removed
-* Line main.c:703: if
+L00335	EQU	*		else clause of if() started at main.c:712
+* Useless label L00336 removed
+* Line main.c:718: if
 	LDB	-1,U		variable joy
 	ANDB	#$01
 * optim: optimizeAndbTstb
-	BEQ	L00336		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00337 removed
-	LDD	_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
-	CMPD	#64
-	BGE	L00336		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00335 removed
-* Line main.c:703
-* Line main.c:704: assignment: +=
-* optim: optimizeStackOperations5
-* optim: optimizeStackOperations5
-* optim: optimizeStackOperations5
-	LDX	#_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
-	LDD	,X
-	ADDD	#$05		optim: optimizeStackOperations5
-	STD	,X
-* Line main.c:705: function call: UpdateDirections()
-	JSR	_UpdateDirections
-L00336	EQU	*		else clause of if() started at main.c:703
-* Useless label L00338 removed
-* Line main.c:709: if
-	LDB	-1,U		variable joy
-	ANDB	#$02
-* optim: optimizeAndbTstb
-	BEQ	L00340		 (optim: condBranchOverUncondBranch)
-* optim: condBranchOverUncondBranch
-* Useless label L00341 removed
-	LDD	_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
-	CMPD	#65472
-	BLE	L00340		 (optim: condBranchOverUncondBranch)
+	BEQ	L00338		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
 * Useless label L00339 removed
-* Line main.c:709
-* Line main.c:710: assignment: -=
+	LDD	_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
+	CMPD	#64
+	BGE	L00338		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00337 removed
+* Line main.c:718
+* Line main.c:719: assignment: +=
+* optim: optimizeStackOperations5
+* optim: optimizeStackOperations5
+* optim: optimizeStackOperations5
+	LDX	#_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
+	LDD	,X
+	ADDD	#$05		optim: optimizeStackOperations5
+	STD	,X
+* Line main.c:720: function call: UpdateDirections()
+	JSR	_UpdateDirections
+L00338	EQU	*		else clause of if() started at main.c:718
+* Useless label L00340 removed
+* Line main.c:724: if
+	LDB	-1,U		variable joy
+	ANDB	#$02
+* optim: optimizeAndbTstb
+	BEQ	L00342		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00343 removed
+	LDD	_playerrotation+2	member y of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
+	CMPD	#65472
+	BLE	L00342		 (optim: condBranchOverUncondBranch)
+* optim: condBranchOverUncondBranch
+* Useless label L00341 removed
+* Line main.c:724
+* Line main.c:725: assignment: -=
 * optim: optimizeStackOperations5
 * optim: optimizeStackOperations5
 * optim: optimizeStackOperations5
@@ -4460,24 +4476,24 @@ L00336	EQU	*		else clause of if() started at main.c:703
 	LDD	,X
 	SUBD	#$05		optim: optimizeStackOperations5
 	STD	,X
-* Line main.c:711: function call: UpdateDirections()
+* Line main.c:726: function call: UpdateDirections()
 	JSR	_UpdateDirections
-L00340	EQU	*		else clause of if() started at main.c:709
-* Useless label L00342 removed
-* Line main.c:715: if
+L00342	EQU	*		else clause of if() started at main.c:724
+* Useless label L00344 removed
+* Line main.c:730: if
 	LDB	-2,U		variable buttons
 	ANDB	#$01
 * optim: optimizeAndbTstb
-	BEQ	L00344		 (optim: condBranchOverUncondBranch)
+	BEQ	L00346		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00343 removed
-* Line main.c:715
-* Line main.c:716: init of variable move_angle
+* Useless label L00345 removed
+* Line main.c:730
+* Line main.c:731: init of variable move_angle
 	LDD	_playerrotation+0	member x of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
 	ADDD	#128		add right side
 * Cast from `int' to byte: result already in B
 	STB	-119,U		variable move_angle
-* Line main.c:717: function call: MovePlayer()
+* Line main.c:732: function call: MovePlayer()
 * optim: storeLoad
 	CLRA			promoting byte argument to word
 	PSHS	B,A		C function argument 2 of MovePlayer(): unsigned char
@@ -4485,22 +4501,22 @@ L00340	EQU	*		else clause of if() started at main.c:709
 	PSHS	B,A		C function argument 1 of MovePlayer(): int
 	JSR	_MovePlayer
 	LEAS	4,S
-L00344	EQU	*		else clause of if() started at main.c:715
-* Useless label L00345 removed
-* Line main.c:720: if
+L00346	EQU	*		else clause of if() started at main.c:730
+* Useless label L00347 removed
+* Line main.c:735: if
 	LDB	-2,U		variable buttons
 	ANDB	#$02
 * optim: optimizeAndbTstb
-	BEQ	L00347		 (optim: condBranchOverUncondBranch)
+	BEQ	L00349		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00346 removed
-* Line main.c:721
-* Line main.c:722: init of variable move_angle
+* Useless label L00348 removed
+* Line main.c:736
+* Line main.c:737: init of variable move_angle
 	LDD	_playerrotation+0	member x of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
 	ADDD	#128		add right side
 * Cast from `int' to byte: result already in B
 	STB	-119,U		variable move_angle
-* Line main.c:723: function call: MovePlayer()
+* Line main.c:738: function call: MovePlayer()
 * optim: storeLoad
 	CLRA			promoting byte argument to word
 	PSHS	B,A		C function argument 2 of MovePlayer(): unsigned char
@@ -4508,22 +4524,22 @@ L00344	EQU	*		else clause of if() started at main.c:715
 	PSHS	B,A		C function argument 1 of MovePlayer(): int
 	JSR	_MovePlayer
 	LEAS	4,S
-L00347	EQU	*		else clause of if() started at main.c:720
-* Useless label L00348 removed
-* Line main.c:726: if
+L00349	EQU	*		else clause of if() started at main.c:735
+* Useless label L00350 removed
+* Line main.c:741: if
 	LDB	-2,U		variable buttons
 	ANDB	#$04
 * optim: optimizeAndbTstb
-	BEQ	L00350		 (optim: condBranchOverUncondBranch)
+	BEQ	L00352		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00349 removed
-* Line main.c:726
-* Line main.c:727: init of variable move_angle
+* Useless label L00351 removed
+* Line main.c:741
+* Line main.c:742: init of variable move_angle
 	LDD	_playerrotation+0	member x of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
 	ADDD	#192		add right side
 * Cast from `int' to byte: result already in B
 	STB	-119,U		variable move_angle
-* Line main.c:728: function call: MovePlayer()
+* Line main.c:743: function call: MovePlayer()
 * optim: storeLoad
 	CLRA			promoting byte argument to word
 	PSHS	B,A		C function argument 2 of MovePlayer(): unsigned char
@@ -4531,22 +4547,22 @@ L00347	EQU	*		else clause of if() started at main.c:720
 	PSHS	B,A		C function argument 1 of MovePlayer(): int
 	JSR	_MovePlayer
 	LEAS	4,S
-L00350	EQU	*		else clause of if() started at main.c:726
-* Useless label L00351 removed
-* Line main.c:731: if
+L00352	EQU	*		else clause of if() started at main.c:741
+* Useless label L00353 removed
+* Line main.c:746: if
 	LDB	-2,U		variable buttons
 	ANDB	#$08
 * optim: optimizeAndbTstb
-	BEQ	L00353		 (optim: condBranchOverUncondBranch)
+	BEQ	L00355		 (optim: condBranchOverUncondBranch)
 * optim: condBranchOverUncondBranch
-* Useless label L00352 removed
-* Line main.c:732
-* Line main.c:733: init of variable move_angle
+* Useless label L00354 removed
+* Line main.c:747
+* Line main.c:748: init of variable move_angle
 	LDD	_playerrotation+0	member x of AnonStruct_main.c:16, via variable playerrotation (optim: removePCRIfRelocatabilityNotSupported)
 	ADDD	#192		add right side
 * Cast from `int' to byte: result already in B
 	STB	-119,U		variable move_angle
-* Line main.c:734: function call: MovePlayer()
+* Line main.c:749: function call: MovePlayer()
 * optim: storeLoad
 	CLRA			promoting byte argument to word
 	PSHS	B,A		C function argument 2 of MovePlayer(): unsigned char
@@ -4554,21 +4570,21 @@ L00350	EQU	*		else clause of if() started at main.c:726
 	PSHS	B,A		C function argument 1 of MovePlayer(): int
 	JSR	_MovePlayer
 	LEAS	4,S
-L00353	EQU	*		else clause of if() started at main.c:731
-* Useless label L00354 removed
-* Line main.c:737: function call: terminal_render()
+L00355	EQU	*		else clause of if() started at main.c:746
+* Useless label L00356 removed
+* Line main.c:752: function call: terminal_render()
 	JSR	_terminal_render
-L00327	EQU	*		while condition at main.c:636
-	LBRA	L00326		go to start of while body
-* Useless label L00328 removed
-* Line main.c:740: return with value
+L00329	EQU	*		while condition at main.c:651
+	LBRA	L00328		go to start of while body
+* Useless label L00330 removed
+* Line main.c:755: return with value
 	CLRA
 	CLRB
 * optim: branchToNextLocation
 * Useless label L00054 removed
 	LEAS	,U
 	PULS	U,PC
-* END FUNCTION main(): defined at main.c:625
+* END FUNCTION main(): defined at main.c:640
 funcend_main	EQU *
 funcsize_main	EQU	funcend_main-_main
 
@@ -9001,7 +9017,7 @@ bss_end	EQU	*
 
 *******************************************************************************
 
-* Importing 33 utility routine(s).
+* Importing 32 utility routine(s).
 MUL16	IMPORT
 SDIV16	IMPORT
 _intensity	IMPORT
@@ -9027,7 +9043,6 @@ initDWordFromSignedWord	IMPORT
 initDWordFromUnsignedWord	IMPORT
 initWordFromDWord	IMPORT
 leftShiftDWord	IMPORT
-mulDWordDWord	IMPORT
 mulDWordInt	IMPORT
 negateDWord	IMPORT
 push4ByteStruct	IMPORT

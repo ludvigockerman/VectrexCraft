@@ -98,15 +98,15 @@ long mul16x16_u(long a, long b){
     return (long)mul16x16((unsigned int)a, (unsigned int)b);
 }
 
-unsigned long mul_signed_neg(long a, long b, long (*func)(long, long), char *neg){
+unsigned long mul_unsigned_neg(long a, long b, long (*func)(long, long), char *neg){
     if (a < 0) {
         a = -a;
-        neg ^= 1;
+        *neg ^= 1;
     }
 
     if (b < 0) {
         b = -b;
-        neg ^= 1;
+        *neg ^= 1;
     }
 
     long result = func(a, b);
@@ -356,14 +356,29 @@ void project_point(vec3 p, vec2* out) {
     //    return;
     //}
 
-    long fx = ((long)r1x  * (long)recip_table[(int)(r2z >> 12)]) >> 18;
-    long fy = ((long)(r2y >> 8) * (long)recip_table[(int)(r2z >> 12)]) >> 18;
-    
-    if (fx > 127 || fx < -127 || fy > 127 || fy < -127) {
+    char neg_fx = 0;
+    unsigned long fx_o = mul_unsigned_neg(r1x, (long)recip_table[(int)(r2z >> 12)], mul16x16_u, &neg_fx);
+    signed int fx = (signed int)(fx_o >> 18);
+
+    char neg_fy = 0;
+    unsigned long fy_o = mul_unsigned_neg((r2y >> 8), (long)recip_table[(int)(r2z >> 12)], mul16x16_u, &neg_fy);
+    signed int fy = (signed int)(fy_o >> 18);
+
+    if (fx > 127 || fy > 127) {
         out->x = -128;
         out->y = -128;
         return;
     }
+
+    if (neg_fx) {
+        fx = -fx;
+    }
+    if (neg_fy) {
+        fy = -fy;
+    }
+    
+    //long fx = ((long)r1x * (long)recip_table[(int)(r2z >> 12)]) >> 18;
+    //long fy = ((long)(r2y >> 8) * ((long)recip_table[(int)(r2z >> 12)])) >> 18;
     
     out->x = (signed char)fx;
     out->y = (signed char)fy;
