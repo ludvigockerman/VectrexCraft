@@ -1,2 +1,13 @@
-.vs/
-main.bin
+# Ignorera allt
+*
+
+# Behåll mappar så Git kan traversera dem
+!*/
+ 
+# Behåll dessa mappar
+!src/
+!include/
+
+# Behåll allt innehåll i dem
+!src/**
+!include/**
