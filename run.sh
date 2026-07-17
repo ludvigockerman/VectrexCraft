@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd ../src
+cd ./build
 mame vectrex -cart main.bin -skip_gameinfo

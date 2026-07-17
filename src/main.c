@@ -414,12 +414,13 @@ void project_point(vec2* out, char c_dz, char c_dy, char c_dx) {
         return;
     }
 
+    long recip = (long)recip_table[(int)(r2z >> 12)];
     char neg_fx = 0;
-    unsigned long fx_o = mul_unsigned_neg(r1x, (long)recip_table[(int)(r2z >> 12)], mul16x16_u, &neg_fx);
+    unsigned long fx_o = mul_unsigned_neg(r1x, recip, mul16x16_u, &neg_fx);
     signed int fx = (signed int)(fx_o >> 18);
 
     char neg_fy = 0;
-    unsigned long fy_o = mul_unsigned_neg((r2y >> 8), (long)recip_table[(int)(r2z >> 12)], mul16x16_u, &neg_fy);
+    unsigned long fy_o = mul_unsigned_neg((r2y >> 8), recip, mul16x16_u, &neg_fy);
     signed int fy = (signed int)(fy_o >> 18);
 
     if (fx > 127 || fy > 127) {
