@@ -6,11 +6,15 @@
 #define true 1
 #define false 0
 
-#define SHOW_POSTITION 1
+#define SHOW_POSITION 1
 #define SHOW_ROTATION 1
+#define DRAW_TERMINAL 1
 #define MAX_VERTICES 64
 #define MAX_QUADS 32
 #define BLOCK_SIZE 8
+
+#define MUL_CACHE_SIZE 12
+#define EMPTY_U16 0xFFFF
 
 typedef struct {
     int x;
@@ -41,6 +45,13 @@ char world[3][3][3] = { // x, y, z
     { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} }
 };
 
+unsigned int dxSinCache[MUL_CACHE_SIZE];
+unsigned int dzCosCache[MUL_CACHE_SIZE];
+unsigned int dxCosCache[MUL_CACHE_SIZE];
+unsigned int dzSinCache[MUL_CACHE_SIZE];
+unsigned int dyCosCache[MUL_CACHE_SIZE];
+unsigned int dySinCache[MUL_CACHE_SIZE];
+
 //quad quads[MAX_QUADS];
 //vec2 projected[MAX_VERTICES];
 
@@ -53,7 +64,7 @@ long decimalz = 0;
 signed int sinv, cosv, sinu, cosu;
 
 // ---------------------------------------------------------
-// Help functions
+// Math functions
 // ---------------------------------------------------------
 
 int mul8(char a, char b);
@@ -134,6 +145,54 @@ long mul_signed(long a, long b, long (*func)(long, long)){
     }
 
     return result;
+}
+
+// ---------------------------------------------------------
+// Help functions
+// ---------------------------------------------------------
+
+void clear_mul_caches(void)
+{
+    char i, j;
+
+    for (i = 0; i < MUL_CACHE_SIZE; i++) {
+        dxSinCache[i] = EMPTY_U16;
+        dzCosCache[i] = EMPTY_U16;
+        dxCosCache[i] = EMPTY_U16;
+        dzSinCache[i] = EMPTY_U16;
+        dyCosCache[i] = EMPTY_U16;
+        dySinCache[i] = EMPTY_U16;
+    }
+}
+
+long get_cached_mul8(
+    int a,
+    int b,
+    unsigned int *cache
+)
+{
+    if (*cache != 0xFFFF) {
+        long result = *cache;
+
+        if ((b < 0) != (a < 0)) {
+            result = -result;
+        }
+
+        return result;
+    }
+    else {
+        char neg = 0;
+
+        long result = (long)mul_unsigned_neg(a, b, mul8_u, &neg);
+
+        *cache = (unsigned int)result;
+
+        if (neg) {
+            result = -result;
+        }
+
+        return result;
+    }
 }
 
 int division(char a, int bfour){
@@ -308,40 +367,45 @@ void MovePlayer(signed char dist, unsigned char move_angle){
     while (decimalz < -255) { decimalz += 255; playerposition.z -= 1; }
 }
 
-void project_point(vec3 p, vec2* out) {
+void project_point(vec2* out, char c_dz, char c_dy, char c_dx) {
     //terminal_print((char*)"PROJECTING POINT");
-    
-    int dz = (int)(p.z - playerposition.z);
-    int dy = (int)(p.y - playerposition.y);
-    int dx = (int)(p.x - playerposition.x);
-    
-    if (dx >= 90 || dy >= 90 || dz >= 90 || dx <= -90 || dy <= -90 || dz <= -90){
-        out->x = -128;
-        out->y = -128;
-        return;
-    }
 
-    char c_dz = (char)dz;
-    char c_dy = (char)dy;
-    char c_dx = (char)dx;
-    
-    //long r1z = (long)(dx * sinv + dz * cosv); // Bit shifting >> 8 (same as dividing by 256)
-    //long r1x = (long)(dx * cosv - dz * sinv);
+    char c_dz_grid = c_dz >> 3;
+    if (c_dz_grid < 0) c_dz_grid = -c_dz_grid;
+    char c_dx_grid = c_dx >> 3;
+    if (c_dx_grid < 0) c_dx_grid = -c_dx_grid;
 
-    long r1z = ((long)mul_signed(c_dx, sinv, mul8_u)) +
-            ((long)mul_signed(c_dz, cosv, mul8_u)); //17 bit signed
+    long r1z_pt1 = get_cached_mul8(
+        c_dx,
+        sinv,
+        &dxSinCache[c_dx_grid]
+    );
 
-    long r1x = ((long)mul_signed(c_dx, cosv, mul8_u)) -
-            ((long)mul_signed(c_dz, sinv, mul8_u)); //17 bit signed
+    long r1z_pt2 = get_cached_mul8(
+        c_dz,
+        cosv,
+        &dzCosCache[c_dz_grid]
+    );
 
-    //long r2y = (long)((long)(dy << 8) * cosu - r1z * sinu);
-    //long r2z = (long)((long)(dy << 8) * sinu + r1z * cosu);
+    long r1z = r1z_pt1 + r1z_pt2; //17 bit signed
 
-    long r2y = (long)((mul_signed(dy, cosu, mul8_u) << 8) - mul_signed(r1z, sinu, mul16x8_u)); //25 bit signed
-    long r2z = (long)((mul_signed(dy, sinu, mul8_u) << 8) + mul_signed(r1z, cosu, mul16x8_u)); //25 bit signed
+    long r1x_pt1 = get_cached_mul8(
+        c_dx,
+        cosv,
+        &dxCosCache[c_dx_grid]
+    );
 
-    //int r1xShift = (int)(r1x >> 8);
-    //int r2yShift = (int)(r2y >> 16);
+    long r1x_pt2 = get_cached_mul8(
+        c_dz,
+        sinv,
+        &dzSinCache[c_dz_grid]
+    );
+
+    long r1x = r1x_pt1 - r1x_pt2;
+
+    long r2y = (long)((mul_signed(c_dy, cosu, mul8_u) << 8) - mul_signed(r1z, sinu, mul16x8_u)); //25 bit signed
+    long r2z = (long)((mul_signed(c_dy, sinu, mul8_u) << 8) + mul_signed(r1z, cosu, mul16x8_u)); //25 bit signed
+
     int r2zShift = (int)(r2z >> 16);
     
     if(r2zShift <= 0) {
@@ -349,12 +413,6 @@ void project_point(vec3 p, vec2* out) {
         out->y = (signed char)-128;
         return;
     }
-
-    //if (r1xShift >= 127 || r2yShift >= 127 || r2zShift >= 127 || r1xShift <= -127 || r2yShift <= -127 || r2zShift <= -127){
-    //    out->x = -128;
-    //    out->y = -128;
-    //    return;
-    //}
 
     char neg_fx = 0;
     unsigned long fx_o = mul_unsigned_neg(r1x, (long)recip_table[(int)(r2z >> 12)], mul16x16_u, &neg_fx);
@@ -377,9 +435,6 @@ void project_point(vec3 p, vec2* out) {
         fy = -fy;
     }
     
-    //long fx = ((long)r1x * (long)recip_table[(int)(r2z >> 12)]) >> 18;
-    //long fy = ((long)(r2y >> 8) * ((long)recip_table[(int)(r2z >> 12)])) >> 18;
-    
     out->x = (signed char)fx;
     out->y = (signed char)fy;
 }
@@ -391,13 +446,24 @@ void project_point(vec3 p, vec2* out) {
 void drawcube(vec3* cube, signed char edges[12][2]) {
     //terminal_print((char*)"DRAWING CUBE");
 
+    int dz = (int)(cube[0].z - playerposition.z);
+    int dy = (int)(cube[0].y - playerposition.y);
+    int dx = (int)(cube[0].x - playerposition.x);
+    
+    if (dx >= 82 || dy >= 82 || dz >= 82 || dx <= -82 || dy <= -82 || dz <= -82){
+        return;
+    }
+
     vec2 pts[8];
     for(unsigned char i = 0; i < 8; i++) {
         if (cube[i].x == -128) {
             pts[i].x = -128;
             pts[i].y = -128;
         } else {
-            project_point(cube[i], &pts[i]);
+            char dz = (char)(cube[i].z - playerposition.z);
+            char dy = (char)(cube[i].y - playerposition.y);
+            char dx = (char)(cube[i].x - playerposition.x);
+            project_point(&pts[i], dz, dy, dx);
         }
     }
 
@@ -658,11 +724,11 @@ int main(void) {
         set_text_size(-6, 40);
         char stringy[32];
 
-        if(SHOW_POSTITION){
+        if(SHOW_POSITION == 1){
             build_position_string(stringy, playerposition.x, playerposition.y, playerposition.z);
             print_str_c(120, -120, stringy);
         }
-        if (SHOW_ROTATION){
+        if (SHOW_ROTATION == 1){
             build_rotation_string(stringy, playerrotation.x, playerrotation.y);
             print_str_c(110, -120, stringy);
         }
@@ -689,6 +755,7 @@ int main(void) {
         //blockpos.y = (signed char)(playerposition.y >> 3);
         //blockpos.z = (signed char)(playerposition.z >> 3);
 
+        clear_mul_caches();
 
         char edges[12][2];
         vec3 out[8];
@@ -748,9 +815,9 @@ int main(void) {
             unsigned char move_angle = (unsigned char)(playerrotation.x + 192);
             MovePlayer(-3, move_angle);
         }
-
-        terminal_render();
+        if(DRAW_TERMINAL == 1){
+            terminal_render();
+        }
     }
-    
     return 0;
 }

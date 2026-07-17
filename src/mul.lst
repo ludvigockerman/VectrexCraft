@@ -1,0 +1,24 @@
+                      (          mul.asm):00001         ;------------------------------------------------
+                      (          mul.asm):00002         ; mul8
+                      (          mul.asm):00003         ;
+                      (          mul.asm):00004         ; Input:
+                      (          mul.asm):00005         ;   A = första unsigned char
+                      (          mul.asm):00006         ;   B = andra unsigned char
+                      (          mul.asm):00007         ;
+                      (          mul.asm):00008         ; Output:
+                      (          mul.asm):00009         ;   D = unsigned int (16 bit)
+                      (          mul.asm):00010         ;
+                      (          mul.asm):00011         ; Clobbers:
+                      (          mul.asm):00012         ;   A,B,D
+                      (          mul.asm):00013         ;------------------------------------------------
+                      (          mul.asm):00014         
+                      (          mul.asm):00015                 .module mul8
+                      (          mul.asm):00016                 .area code
+                      (          mul.asm):00017         
+                      (          mul.asm):00018                 .globl _mul8
+                      (          mul.asm):00019         
+0000                  (          mul.asm):00020         _mul8:
+0000 A663             (          mul.asm):00021                 lda 3,s       ; argument 1
+0002 E665             (          mul.asm):00022                 ldb 5,s       ; argument 2
+0004 3D               (          mul.asm):00023                 mul           ; A * B -> D
+0005 39               (          mul.asm):00024                 rts
