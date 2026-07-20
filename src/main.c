@@ -109,6 +109,8 @@ long mul16x16_u(long a, long b){
     return (long)mul16x16((unsigned int)a, (unsigned int)b);
 }
 
+/* 
+
 unsigned long mul_unsigned_neg(long a, long b, long (*func)(long, long), char *neg){
     if (a < 0) {
         a = -a;
@@ -144,6 +146,88 @@ long mul_signed(long a, long b, long (*func)(long, long)){
         result = -result;
     }
 
+    return result;
+}
+
+*/
+
+unsigned long mul8_unsigned_neg(long a, long b, char *neg)                 
+{                                                                     
+    if (a < 0) {                                                      
+        a = -a;                                                       
+        *neg ^= 1;                                                    
+    }                                                                 
+                                                                      
+    if (b < 0) {                                                      
+        b = -b;                                                       
+        *neg ^= 1;                                                    
+    }                                                                 
+                                                                      
+    return (unsigned long)mul8((unsigned long)a, (unsigned long)b);                        
+}                                                                     
+                                                                      
+long mul8_signed(long a, long b)                                  
+{                                                                     
+    char neg = 0;                                                     
+    long result = mul8_unsigned_neg(a,b,&neg);                    
+                                                                      
+    if(neg)                                                           
+        result = -result;                                             
+                                                                      
+    return result;
+}
+
+
+unsigned long mul16x8_unsigned_neg(long a, long b, char *neg)                 
+{                                                                     
+    if (a < 0) {                                                      
+        a = -a;                                                       
+        *neg ^= 1;                                                    
+    }                                                                 
+                                                                      
+    if (b < 0) {                                                      
+        b = -b;                                                       
+        *neg ^= 1;                                                    
+    }                                                                 
+                                                                      
+    return (unsigned long)mul16x8((unsigned long)a, (unsigned long)b);                        
+}                                                                     
+                                                                      
+long mul16x8_signed(long a, long b)                                  
+{                                                                     
+    char neg = 0;                                                     
+    long result = mul16x8_unsigned_neg(a,b,&neg);                    
+                                                                      
+    if(neg)                                                           
+        result = -result;                                             
+                                                                      
+    return result;
+}
+
+
+unsigned long mul16x16_unsigned_neg(long a, long b, char *neg)                 
+{                                                                     
+    if (a < 0) {                                                      
+        a = -a;                                                       
+        *neg ^= 1;                                                    
+    }                                                                 
+                                                                      
+    if (b < 0) {                                                      
+        b = -b;                                                       
+        *neg ^= 1;                                                    
+    }                                                                 
+                                                                      
+    return (unsigned long)mul16x16((unsigned long)a, (unsigned long)b);                        
+}                                                                     
+                                                                      
+long mul16x16_signed(long a, long b)                                  
+{                                                                     
+    char neg = 0;                                                     
+    long result = mul16x16_unsigned_neg(a,b,&neg);                    
+                                                                      
+    if(neg)                                                           
+        result = -result;                                             
+                                                                      
     return result;
 }
 
@@ -183,7 +267,7 @@ long get_cached_mul8(
     else {
         char neg = 0;
 
-        long result = (long)mul_unsigned_neg(a, b, mul8_u, &neg);
+        long result = (unsigned long)mul8_unsigned_neg(a, b, &neg);
 
         *cache = (unsigned int)result;
 
@@ -355,6 +439,8 @@ void UpdateDirections()
 
     GetSin(&sinu, angleu);
     GetSin(&cosu, angleu+64);
+
+    clear_mul_caches();
 }
 
 void MovePlayer(signed char dist, unsigned char move_angle){
@@ -374,6 +460,8 @@ void project_point(vec2* out, char c_dz, char c_dy, char c_dx) {
     if (c_dz_grid < 0) c_dz_grid = -c_dz_grid;
     char c_dx_grid = c_dx >> 3;
     if (c_dx_grid < 0) c_dx_grid = -c_dx_grid;
+    char c_dy_grid = c_dy >> 3;
+    if (c_dy_grid < 0) c_dy_grid = -c_dy_grid;
 
     long r1z_pt1 = get_cached_mul8(
         c_dx,
@@ -403,8 +491,28 @@ void project_point(vec2* out, char c_dz, char c_dy, char c_dx) {
 
     long r1x = r1x_pt1 - r1x_pt2;
 
-    long r2y = (long)((mul_signed(c_dy, cosu, mul8_u) << 8) - mul_signed(r1z, sinu, mul16x8_u)); //25 bit signed
-    long r2z = (long)((mul_signed(c_dy, sinu, mul8_u) << 8) + mul_signed(r1z, cosu, mul16x8_u)); //25 bit signed
+    long r2y_pt1 = get_cached_mul8(
+        c_dy,
+        cosu,
+        &dyCosCache[c_dy_grid]
+    );
+
+    long r2y_pt2 = mul16x8_signed(r1z, sinu); //25 bit signed
+    
+    long r2y = (long)((r2y_pt1 << 8) - r2y_pt2); //25 bit signed
+
+    //long r2y = (long)((mul_signed(c_dy, cosu, mul8_u) << 8) - mul_signed(r1z, sinu, mul16x8_u)); //25 bit signed
+
+    long r2z_pt1 = get_cached_mul8(
+        c_dy,
+        sinu,
+        &dySinCache[c_dy_grid]
+    );
+
+    long r2z_pt2 = mul16x8_signed(r1z, cosu); 
+
+    //long r2z = (long)((mul_signed(c_dy, sinu, mul8_u) << 8) + mul_signed(r1z, cosu, mul16x8_u)); //25 bit signed
+    long r2z = (long)((r2z_pt1 << 8) + r2z_pt2); //25 bit signed
 
     int r2zShift = (int)(r2z >> 16);
     
@@ -416,11 +524,11 @@ void project_point(vec2* out, char c_dz, char c_dy, char c_dx) {
 
     long recip = (long)recip_table[(int)(r2z >> 12)];
     char neg_fx = 0;
-    unsigned long fx_o = mul_unsigned_neg(r1x, recip, mul16x16_u, &neg_fx);
+    unsigned long fx_o = mul16x16_unsigned_neg(r1x, recip, &neg_fx);
     signed int fx = (signed int)(fx_o >> 18);
 
     char neg_fy = 0;
-    unsigned long fy_o = mul_unsigned_neg((r2y >> 8), recip, mul16x16_u, &neg_fy);
+    unsigned long fy_o = mul16x16_unsigned_neg((r2y >> 8), recip, &neg_fy);
     signed int fy = (signed int)(fy_o >> 18);
 
     if (fx > 127 || fy > 127) {
@@ -755,8 +863,6 @@ int main(void) {
         //blockpos.x = (signed char)(playerposition.x >> 3);
         //blockpos.y = (signed char)(playerposition.y >> 3);
         //blockpos.z = (signed char)(playerposition.z >> 3);
-
-        clear_mul_caches();
 
         char edges[12][2];
         vec3 out[8];
