@@ -150,86 +150,36 @@ long mul_signed(long a, long b, long (*func)(long, long)){
 }
 
 */
-
-unsigned long mul8_unsigned_neg(long a, long b, char *neg)                 
-{                                                                     
-    if (a < 0) {                                                      
-        a = -a;                                                       
-        *neg ^= 1;                                                    
-    }                                                                 
-                                                                      
-    if (b < 0) {                                                      
-        b = -b;                                                       
-        *neg ^= 1;                                                    
-    }                                                                 
-                                                                      
-    return (unsigned long)mul8((unsigned long)a, (unsigned long)b);                        
-}                                                                     
-                                                                      
-long mul8_signed(long a, long b)                                  
-{                                                                     
-    char neg = 0;                                                     
-    long result = mul8_unsigned_neg(a,b,&neg);                    
-                                                                      
-    if(neg)                                                           
-        result = -result;                                             
-                                                                      
-    return result;
+#define DEFINE_MUL_SIGN_HELPERS(prefix, basefunc)                         \
+unsigned long prefix##_unsigned_neg(long a, long b, char *neg)            \
+{                                                                         \
+    if (a < 0) {                                                          \
+        a = -a;                                                           \
+        *neg ^= 1;                                                        \
+    }                                                                     \
+                                                                          \
+    if (b < 0) {                                                          \
+        b = -b;                                                           \
+        *neg ^= 1;                                                        \
+    }                                                                     \
+                                                                          \
+    return (unsigned long)basefunc((unsigned long)a, (unsigned long)b);   \
+}                                                                         \
+                                                                          \
+long prefix##_signed(long a, long b)                                      \
+{                                                                         \
+    char neg = 0;                                                         \
+    long result = (long)prefix##_unsigned_neg(a, b, &neg);                \
+                                                                          \
+    if (neg)                                                              \
+        result = -result;                                                 \
+                                                                          \
+    return result;                                                        \
 }
 
-
-unsigned long mul16x8_unsigned_neg(long a, long b, char *neg)                 
-{                                                                     
-    if (a < 0) {                                                      
-        a = -a;                                                       
-        *neg ^= 1;                                                    
-    }                                                                 
-                                                                      
-    if (b < 0) {                                                      
-        b = -b;                                                       
-        *neg ^= 1;                                                    
-    }                                                                 
-                                                                      
-    return (unsigned long)mul16x8((unsigned long)a, (unsigned long)b);                        
-}                                                                     
-                                                                      
-long mul16x8_signed(long a, long b)                                  
-{                                                                     
-    char neg = 0;                                                     
-    long result = mul16x8_unsigned_neg(a,b,&neg);                    
-                                                                      
-    if(neg)                                                           
-        result = -result;                                             
-                                                                      
-    return result;
-}
-
-
-unsigned long mul16x16_unsigned_neg(long a, long b, char *neg)                 
-{                                                                     
-    if (a < 0) {                                                      
-        a = -a;                                                       
-        *neg ^= 1;                                                    
-    }                                                                 
-                                                                      
-    if (b < 0) {                                                      
-        b = -b;                                                       
-        *neg ^= 1;                                                    
-    }                                                                 
-                                                                      
-    return (unsigned long)mul16x16((unsigned long)a, (unsigned long)b);                        
-}                                                                     
-                                                                      
-long mul16x16_signed(long a, long b)                                  
-{                                                                     
-    char neg = 0;                                                     
-    long result = mul16x16_unsigned_neg(a,b,&neg);                    
-                                                                      
-    if(neg)                                                           
-        result = -result;                                             
-                                                                      
-    return result;
-}
+DEFINE_MUL_SIGN_HELPERS(mul8, mul8)
+DEFINE_MUL_SIGN_HELPERS(mul16x8, mul16x8)
+DEFINE_MUL_SIGN_HELPERS(mul16x16, mul16x16)
 
 // ---------------------------------------------------------
 // Help functions
