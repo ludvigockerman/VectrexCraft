@@ -6,9 +6,9 @@
 #define true 1
 #define false 0
 
-#define SHOW_POSITION 1
-#define SHOW_ROTATION 1
-#define DRAW_TERMINAL 1
+#define SHOW_POSITION 0
+#define SHOW_ROTATION 0
+#define DRAW_TERMINAL 0
 #define MAX_VERTICES 64
 #define MAX_QUADS 32
 #define BLOCK_SIZE 8
@@ -40,9 +40,9 @@ typedef struct {
 } quad;
 
 char world[3][3][3] = { // x, y, z
-    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },
-    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} },
-    { {0, 0, 0}, {0, 0, 0}, {0, 0, 0} }
+    { {0, 1, 0}, {0, 0, 0}, {0, 1, 0} },
+    { {0, 1, 0}, {1, 0, 0}, {0, 0, 1} },
+    { {0, 0, 1}, {1, 0, 0}, {1, 0, 0} }
 };
 
 unsigned int dxSinCache[MUL_CACHE_SIZE];
@@ -59,7 +59,6 @@ vec3 playerposition;
 vec2 playerrotation;
 long decimalx = 0;
 long decimalz = 0;
-//int sensitivity = 10;
 
 signed int sinv, cosv, sinu, cosu;
 
@@ -109,47 +108,6 @@ long mul16x16_u(long a, long b){
     return (long)mul16x16((unsigned int)a, (unsigned int)b);
 }
 
-/* 
-
-unsigned long mul_unsigned_neg(long a, long b, long (*func)(long, long), char *neg){
-    if (a < 0) {
-        a = -a;
-        *neg ^= 1;
-    }
-
-    if (b < 0) {
-        b = -b;
-        *neg ^= 1;
-    }
-
-    long result = func(a, b);
-
-    return result;
-}
-
-long mul_signed(long a, long b, long (*func)(long, long)){
-    char neg = 0;
-
-    if (a < 0) {
-        a = -a;
-        neg ^= 1;
-    }
-
-    if (b < 0) {
-        b = -b;
-        neg ^= 1;
-    }
-
-    long result = func(a, b);
-
-    if (neg) {
-        result = -result;
-    }
-
-    return result;
-}
-
-*/
 #define DEFINE_MUL_SIGN_HELPERS(prefix, basefunc)                         \
 unsigned long prefix##_unsigned_neg(long a, long b, char *neg)            \
 {                                                                         \
@@ -792,37 +750,32 @@ int main(void) {
             print_str_c(110, -120, stringy);
         }
         
-        /*for (char x = 0; x < 3; x++) {
+        //terminal_print("START");
+
+        for (char x = 0; x < 3; x++) {
             for (char y = 0; y < 3; y++) {
                 for (char z = 0; z < 3; z++) {
+                    //terminal_print("ATT1");
                     if (world[x][y][z] == 1) {
-                        vec3 pos;
-                        pos.x = x * 10;
-                        pos.y = y * 10;
-                        pos.z = (z * 10) + 30;
+                        //terminal_print((char*)"WORLD HIT");
+                        char edges[12][2];
+                        vec3 out[8];
+
+                        vec3 pos = {x << 3, y << 3, z << 3};
                         
-                        createcubeat(pos, x, y, z);
+                        createcubeat(pos, edges, out);
+                        drawcube(out, edges);
                     }
                 }
             }
-        }*/
+        }
 
-        //prepare_vertices();
-
-        //c_vec2 blockpos;
-        //blockpos.x = (signed char)(playerposition.x >> 3);
-        //blockpos.y = (signed char)(playerposition.y >> 3);
-        //blockpos.z = (signed char)(playerposition.z >> 3);
-
-        char edges[12][2];
-        vec3 out[8];
-
-        vec3 p1 = {10, -10, 30};
-        createcubeat(p1, edges, out);
-        drawcube(out, edges);
-        vec3 p2 = {10, -10, 50};
-        createcubeat(p2, edges, out);
-        drawcube(out, edges);
+        //vec3 p1 = {10, -10, 30};
+        //createcubeat(p1, edges, out);
+        //drawcube(out, edges);
+        //vec3 p2 = {10, -10, 50};
+        //createcubeat(p2, edges, out);
+        //drawcube(out, edges);
 
         uint8_t buttons = read_buttons();
         uint8_t joy = read_joystick(1);
